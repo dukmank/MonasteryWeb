@@ -9,6 +9,27 @@ Onboarding guide for the incoming frontend developer. Read it once end-to-end be
 
 ---
 
+## ⚠️ Git workflow — read this first (mandatory)
+
+**Never commit to or push the `main` branch. `main` is the owner's protected baseline — do not modify or overwrite it.**
+
+Always do your work on a **new branch** and open a **Pull Request** for the owner to review and merge:
+
+```bash
+git checkout main
+git pull                              # get the latest baseline
+git checkout -b feature/<short-name>  # create your own branch
+# ... make changes, commit ...
+git push -u origin feature/<short-name>
+# then open a Pull Request on GitHub — the owner reviews & merges into main
+```
+
+- One branch per task; keep PRs small and focused.
+- Do **not** force-push, rebase, or delete `main`.
+- Do **not** deploy from your branch — deploys happen from `main` after a PR is merged (see section 5).
+
+---
+
 ## 1. What is being handed over (checklist)
 
 ### A. Source code
