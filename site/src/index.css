@@ -1,0 +1,48 @@
+/* ---- Global base (shared by every page) ---- */
+:root {
+  --maroon: #7B1E2A;
+  --maroon-dark: #5C1520;
+  --gold: #C49A2A;
+  --gold-dark: #8B6B1A;
+  --ink: #1A1410;
+  --cream: #FAF7F2;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Work Sans", sans-serif;
+  background-color: #FAF7F2;
+  color: #1A1410;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, .font-serif {
+  font-family: "Noto Serif", serif;
+  font-weight: 400;
+}
+
+::selection { background: #F5EAEB; color: #5C1520; }
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+  vertical-align: middle;
+}
+
+/* Shared editorial helpers used across many prototypes */
+.eyebrow {
+  font-family: "Work Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #C49A2A;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.text-balance { text-wrap: balance; }
+
+/* Custom scrollbar to match the warm palette */
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: #F0EAE0; }
+::-webkit-scrollbar-thumb { background: #C9A24A; border-radius: 999px; border: 3px solid #F0EAE0; }
+::-webkit-scrollbar-thumb:hover { background: #7B1E2A; }

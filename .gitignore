@@ -1,0 +1,25 @@
+# OS
+.DS_Store
+
+# Claude Code local (machine-specific)
+.claude/settings.local.json
+.claude 2/
+
+# Node / build (under site/)
+site/node_modules/
+site/dist/
+site/.firebase/
+*-debug.log
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Heavy design source assets — shared separately via Drive.
+# Final images/PDFs are already served from Cloudinary.
+New Monastery website - Images/
+Design+HTML/
+magazine/
+Untitled design (3).png
+1.jpeg
