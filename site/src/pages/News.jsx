@@ -22,7 +22,8 @@ export default function News() {
   useEffect(() => {
     let alive = true;
     listPublished("news").then((d) => {
-      if (alive) setDocs(d || []);
+      // "Consecration page only" posts appear on the 2028 site, not in this list.
+      if (alive) setDocs((d || []).filter((x) => !x.consecrationOnly));
     });
     return () => { alive = false; };
   }, []);
