@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 
@@ -29,7 +29,6 @@ import Gallery from "./pages/Gallery.jsx";
 import Apps from "./pages/Apps.jsx";
 import Contact from "./pages/Contact.jsx";
 import Offering from "./pages/Offering.jsx";
-import LamaSonamTashi from "./pages/LamaSonamTashi.jsx";
 import Terms from "./pages/Terms.jsx";
 import Privacy from "./pages/Privacy.jsx";
 import NotFound from "./pages/NotFound.jsx";
@@ -87,7 +86,7 @@ export default function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/apps" element={<Apps />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/lama-sonam-tashi" element={<LamaSonamTashi />} />
+          <Route path="/lama-sonam-tashi" element={<Navigate to="/presidents/lama-sonam-tashi-rinpoche" replace />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />

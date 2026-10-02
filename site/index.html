@@ -49,10 +49,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Tibetan:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Oriya:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
       /* ── Tibetan typography (single knob) ──────────────────────────
          Change --tib-scale to resize ALL Tibetan text app-wide. */
       :root { --tib-scale: 1.22; }
+      html.lang-or body { font-family: "Noto Sans Oriya", "Work Sans", sans-serif; }
+      html.lang-hi body { font-family: "Noto Sans Devanagari", "Work Sans", sans-serif; }
+      html.lang-zh body { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Work Sans", sans-serif; }
+      html:is(.lang-or, .lang-hi, .lang-zh, .lang-vi) .uppercase { letter-spacing: normal; }
       html.lang-tib body { font-family: "Noto Serif Tibetan", "Noto Serif", serif; line-height: 1.9; }
       /* Enlarge only text-bearing leaf elements (keeps design proportions,
          leaves images/icons untouched, no compounding). */

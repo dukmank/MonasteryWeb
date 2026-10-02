@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { createItem } from "./content.js";
+import { addToMailerLite } from "./mailerlite.js";
 
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
 
-// Shared newsletter subscribe logic — saves to Firestore "subscribers"
-// and notifies via Web3Forms (same service as the contact form).
+// Shared newsletter subscribe logic — saves to Firestore "subscribers", adds the
+// email to MailerLite and notifies via Web3Forms (same service as the contact form).
 export function useNewsletter() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | sending | sent
@@ -21,7 +22,10 @@ export function useNewsletter() {
       console.warn("save subscriber:", err?.message);
     }
 
-    // 2) Thông báo qua Web3Forms (nếu đã cấu hình key)
+    // 2) Add to the MailerLite "Monastery Newsletter" group
+    await addToMailerLite({ email, source: "newsletter" });
+
+    // 3) Thông báo qua Web3Forms (nếu đã cấu hình key)
     try {
       if (WEB3FORMS_KEY) {
         await fetch("https://api.web3forms.com/submit", {

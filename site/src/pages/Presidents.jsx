@@ -62,13 +62,10 @@ export default function Presidents() {
           <div className="order-1 md:order-2 space-y-lg">
             <div className="space-y-md">
               <p className="font-body-md text-body-md text-ink-mid">
-                Born in 1930 in the Tromthar region of Kham, Tibet, Chagdud Tulku Rinpoche was recognized as the sixteenth incarnation of the Chagdud line at the age of three. His early years were spent in rigorous monastic training, receiving profound empowerments and instructions from the most accomplished masters of the Nyingma tradition.
+                Chagdud Tulku Rinpoche (1930–2002) was born as Padma Gargyi Wangchuk in Kham, Eastern Tibet, and was recognized at the age of three as the incarnation of the previous Chagdud Tulku. He received teachings and empowerments from great masters including Dzongsar Khyentse Chökyi Lodrö, Dilgo Khyentse, and Kyabje Dudjom Jigdral Yeshe Dorje.
               </p>
               <p className="font-body-md text-body-md text-ink-mid">
-                After escaping from Tibet in 1959, Rinpoche dedicated his life to the survival of the Dharma. He served the Tibetan community in India and Nepal before his pioneering mission to the West. In 1979, he moved to the United States and eventually Brazil, establishing the Chagdud Gonpa Foundation and Khadro Ling.
-              </p>
-              <p className="font-body-md text-body-md text-ink-mid">
-                His presidency was marked by a tireless commitment to the Dudjom Tersar lineage, translating sacred texts, and building temples that serve as beacons of peace in both North and South America. His legacy remains a testament to the indestructible nature of enlightened mind.
+                After escaping Tibet in 1959, he lived and practiced in India and Nepal before moving to the United States in 1979. From 1992, he played an important role in spreading Tibetan Buddhism in Brazil and throughout the West, inspiring numerous Dharma centers, including Rigzin Ling and Khadro Ling. He passed away in Brazil in 2002 and remained in meditation for more than five days after his passing.
               </p>
             </div>
             <Link to="/presidents/chagdud-tulku-rinpoche" className="inline-flex items-center gap-sm bg-maroon text-gold-light px-xl py-md rounded-DEFAULT font-button-text hover:bg-maroon-dark transition-all duration-300 uppercase group">
@@ -84,13 +81,13 @@ export default function Presidents() {
           <div className="space-y-lg">
             <div className="space-y-md">
               <p className="font-body-md text-body-md text-ink-mid">
-                Kongtul Tsephel Rinpoche was born in 1926 in the valley of Powo, Tibet. Known for his unwavering devotion and administrative brilliance, he served as a personal attendant to Kyabje Dudjom Rinpoche for over twelve years, absorbing the essence of the lineage through proximity and profound service.
+                Tulku Tsephel Rinpoche (1926–2010) was born in Kongpo, Tibet, and recognized as the reincarnation of Tulku Rangbar Rinpoche. He studied at Mindrolling Monastery and later served Kyabje Dudjom Rinpoche for twelve years, receiving extensive teachings, empowerments, and transmissions.
               </p>
               <p className="font-body-md text-body-md text-ink-mid">
-                In 1975, he was appointed as the 5th President of the monastery, taking on the monumental task of stabilizing the monastic community in exile. His leadership was instrumental in the establishment of the Shedra (Monastic College) in Odisha, India, ensuring that the intellectual and contemplative rigor of the Nyingma school would be preserved for future generations.
+                After coming to India, he settled in Odisha at the request of Dudjom Rinpoche and served Dundul Raptenling Monastery, becoming its fifth President around 1975. He played an important role in establishing the monastery’s first Shedra and was renowned for his knowledge of astronomy and divination.
               </p>
               <p className="font-body-md text-body-md text-ink-mid">
-                Rinpoche's tenure was characterized by the 'Shedra model' of leadership—a focus on textual study alongside ritual practice. He was a master of the inner yogas and a compassionate administrator who cared deeply for every monk under his guidance.
+                He passed away in 2010 and remained in tukdam for five days. Following his cremation, sacred ringsel and a rainbow-colored bone were discovered, and prayers were offered for his swift reincarnation.
               </p>
             </div>
             <Link to="/presidents/kongtul-tsephel-rinpoche" className="inline-flex items-center gap-sm bg-maroon text-gold-light px-xl py-md rounded-DEFAULT font-button-text hover:bg-maroon-dark transition-all duration-300 uppercase group">
@@ -107,7 +104,7 @@ export default function Presidents() {
             <div className="mt-lg text-center">
               <span className="font-label-eyebrow text-label-eyebrow text-gold tracking-widest block uppercase">Second President</span>
               <h3 className="font-section-heading text-subheading text-maroon">Kongtul Tsephel Rinpoche</h3>
-              <p className="text-ink-light font-caption mt-xs">1926 — 2005</p>
+              <p className="text-ink-light font-caption mt-xs">1926 — 2010</p>
             </div>
           </Link>
         </div>
@@ -129,13 +126,13 @@ export default function Presidents() {
           <div className="order-1 md:order-2 space-y-lg">
             <div className="space-y-md">
               <p className="font-body-md text-body-md text-ink-mid">
-                <strong>Lama Sonam Tashi Rinpoche</strong> is the head of Dundul Raptenling Monastery in Odisha, India, and a devoted holder of the Dudjom Tersar lineage. Trained from a young age in the Dudjom tradition, he studied Tibetan language, Buddhist scriptures, rituals, sacred dances, and lineage practices under many respected masters. He has received numerous empowerments, oral transmissions, and instructions from great lineage holders, including Kyabje Dudjom Yangsi Rinpoche, Kyabje Dzongsar Khyentse Rinpoche, Kyabje Chatral Rinpoche, Kyabje Garab Dorje Rinpoche, Kyabje Namkha Drimed Rabjam Rinpoche, Kyabje Shechen Rabjam Rinpoche, and His Holiness the 14th Dalai Lama.
+                Lama Sonam Tashi was born in 1987 and trained in the Dudjom lineage from a young age. He studied at Nepal Dudjom Monastery and Dundul Raptenling Monastery, where he received training in Tibetan language, scriptures, rituals, and sacred dances.
               </p>
               <p className="font-body-md text-body-md text-ink-mid">
-                Since assuming responsibility for Dundul Raptenling Monastery during a period of great difficulty, Lama Sonam Tashi Rinpoche has played a central role in reviving and strengthening the monastery. Through his leadership, new monks were recruited, monastic education was restored, and major facilities were completed, including classrooms, dormitories, a computer room, library, office, and a large teaching hall. He has also organized important empowerments, drupchens, Troma gatherings, and lineage ceremonies, while continuing to teach Buddhist texts, rituals, cham dances, and Dudjom Tersar practices to monks and lay practitioners.
+                Since taking responsibility for Dundul Raptenling Monastery, he has played a central role in its revival, supporting monastic education, recruiting monks, developing facilities, and preserving the Dudjom Tersar tradition. He has received numerous empowerments and transmissions from renowned masters, including Kyabje Dudjom Yangsi Rinpoche, Dzongsar Khyentse Rinpoche, Chatral Rinpoche, and His Holiness the Dalai Lama.
               </p>
               <p className="font-body-md text-body-md text-ink-mid">
-                Today, he continues to guide Dundul Raptenling Monastery, support the education of the sangha, preserve the Dudjom lineage, and oversee major Dharma projects, including the ongoing construction of Zangdok Palri.
+                He has also authored and published works on the Dudjom tradition, organized major Dharma practices and empowerments, and continues to oversee the monastery's educational activities and the ongoing Zangdok Palri project.
               </p>
             </div>
             <Link to="/presidents/lama-sonam-tashi-rinpoche" className="inline-flex items-center gap-sm bg-maroon text-gold-light px-xl py-md rounded-DEFAULT font-button-text hover:bg-maroon-dark transition-all duration-300 uppercase group">

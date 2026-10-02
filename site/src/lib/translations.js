@@ -7,6 +7,8 @@
 // Per-page translation files are auto-merged from ./translations/*.js.
 // BASE (curated nav/footer/common below) wins on any key conflict.
 const pageModules = import.meta.glob("./translations/*.js", { eager: true });
+// Pema's reviewed Tibetan (2026-10) wins over BASE and every page file.
+import REVIEWED from "./translations/reviewed-pema-2026-10.js";
 const PAGE_TIB = Object.assign(
   {},
   ...Object.values(pageModules).map((m) => m.default || {})
@@ -90,4 +92,4 @@ const BASE = {
     "ཁྱེད་ཀྱིས་འཚོལ་བཞིན་པའི་ཤོག་ངོས་དེ་མི་གནས་པའམ་སྤོ་ཟིན་པ་ཡིན་སྲིད། ཁྱེད་ཀྱི་ལམ་གྱིས་བཀའ་ཆོས་ལ་སླར་ཁྲིད་པར་ཤོག",
 };
 
-export const TIB = Object.assign({}, PAGE_TIB, BASE);
+export const TIB = Object.assign({}, PAGE_TIB, BASE, REVIEWED);

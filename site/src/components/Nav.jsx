@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { NAV } from "../site.js";
-import { useLang } from "../lib/i18n.jsx";
+import { useLang, LANGUAGES } from "../lib/i18n.jsx";
 
 const LOGO =
   "https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto,w_160/v1782276752/monastery/jcdpra8qbr4a3loloekk.png";
@@ -37,6 +37,9 @@ export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileGroup, setMobileGroup] = useState(null);
   const { lang, setLang } = useLang();
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef(null);
+  const current = LANGUAGES.find((l) => l.code === lang) || LANGUAGES[0];
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -44,6 +47,20 @@ export default function Nav() {
     setMobileOpen(false);
     setMobileGroup(null);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!langOpen) return;
+    const onDown = (e) => {
+      if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false);
+    };
+    const onKey = (e) => e.key === "Escape" && setLangOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [langOpen]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -88,20 +105,41 @@ export default function Nav() {
               Support / Donate
             </Link>
 
-            <div className="flex items-center gap-3 text-[10px] font-bold tracking-widest uppercase text-ink-light">
+            <div className="relative" data-no-translate ref={langRef}>
               <button
-                onClick={() => setLang("EN")}
-                className={lang === "EN" ? "text-maroon border-b border-maroon" : "hover:text-maroon"}
+                type="button"
+                aria-label="Language"
+                aria-haspopup="listbox"
+                aria-expanded={langOpen}
+                onClick={() => setLangOpen((o) => !o)}
+                className="flex items-center gap-1 text-[11px] font-bold tracking-widest text-maroon hover:text-maroon-dark"
               >
-                EN
+                <span className="material-symbols-outlined text-[18px]" aria-hidden="true">language</span>
+                {current.short}
               </button>
-              <span className="opacity-20">|</span>
-              <button
-                onClick={() => setLang("TIB")}
-                className={lang === "TIB" ? "text-maroon border-b border-maroon" : "hover:text-maroon"}
-              >
-                བོད
-              </button>
+              {langOpen && (
+                <ul role="listbox" aria-label="Language" className="absolute right-0 mt-2 w-40 bg-white border border-cream-dark rounded-sm shadow-lg py-1 z-50">
+                  {LANGUAGES.map((l) => (
+                    <li key={l.code} role="option" aria-selected={l.code === lang}>
+                      <button
+                        type="button"
+                        lang={l.html}
+                        onClick={() => {
+                          setLang(l.code);
+                          setLangOpen(false);
+                        }}
+                        className={
+                          "w-full flex items-center gap-3 px-4 py-2 text-left text-[13px] hover:bg-cream " +
+                          (l.code === lang ? "text-maroon font-semibold" : "text-ink")
+                        }
+                      >
+                        <span className="w-6 text-[11px] font-bold tracking-widest">{l.short}</span>
+                        {l.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>

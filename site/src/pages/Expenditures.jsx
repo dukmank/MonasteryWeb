@@ -59,7 +59,7 @@ export default function Expenditures() {
               </div>
               <h3 className="font-card-title text-card-title text-maroon mb-sm">Food &amp; Nutrition</h3>
               <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                We spend about <span className="font-medium text-maroon">₹200,000</span> each month on food for seventy monks and ten staff members. On special occasions, we host up to 100 people.
+                We spend about ₹200,000 each month on food for seventy monks and ten staff members. On special occasions, we host up to 100 people.
               </p>
             </article>
             {/* Electricity */}
@@ -86,7 +86,7 @@ export default function Expenditures() {
               </div>
               <h3 className="font-card-title text-card-title text-maroon mb-sm">Healthcare</h3>
               <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                Odisha is malaria prone; annual expenses are approximately <span className="font-medium text-maroon">₹200,000</span>. Serious cases require travel to a city hospital 90 km away.
+                Odisha is malaria prone; annual expenses are approximately ₹200,000. Serious cases require travel to a city hospital 90 km away.
               </p>
             </article>
             {/* Staff & Teachers */}
@@ -202,7 +202,7 @@ export default function Expenditures() {
               </div>
               <h3 className="font-card-title text-card-title text-maroon mb-sm">Major Maintenance</h3>
               <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                Preserving our heritage requires cyclical maintenance. We budget approximately <span className="font-medium text-maroon">₹6,00,000</span> every 3 years for complete painting and whitewashing of the complex.
+                Preserving our heritage requires cyclical maintenance. We budget approximately ₹6,00,000 every 3 years for complete painting and whitewashing of the complex.
               </p>
             </article>
           </div>

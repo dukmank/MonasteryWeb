@@ -38,7 +38,7 @@ export const PAGE_SEO = {
     description:
       "Meet the presidents who have guided Dundul Raptenling Monastery’s mission to preserve Dharma, support monks, and serve the Buddhist community.",
   },
-  "/lama-sonam-tashi": {
+  "/presidents/lama-sonam-tashi-rinpoche": {
     title: "Lama Sonam Tashi Rinpoche | Dundul Raptenling Monastery",
     description:
       "Learn about Lama Sonam Tashi Rinpoche, head of Dundul Raptenling Monastery and a dedicated teacher of the Dudjom Tersar lineage.",

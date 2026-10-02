@@ -110,7 +110,9 @@ export default function Home() {
             <h2 className="text-4xl text-ink font-serif leading-tight">Establishing the Wisdom for Future Generations</h2>
             <div className="space-y-6 text-ink-mid text-[17px] leading-[1.8] font-sans">
               <p>Before 1959, in Tibet, His Holiness Dudjom Jigdral Yeshe Dorje established Rigzin Ghatseling Monastery in Kongpo. Following the events of 1959, His Holiness recognized the urgent need to prevent the degeneration of the Dharma in exile.</p>
-              <p>With the support of the Government of Odisha and guidance from the Tibetan Government-in-Exile, he founded <strong>Dundul Raptenling Monastery</strong> in Orissa—a sacred place dedicated to the study and practice of the Nyingma tradition.</p>
+              <p>
+                With the support of the Government of Odisha and guidance from the Tibetan Government-in-Exile, he founded Dundul Raptenling Monastery in Orissa—a sacred place dedicated to the study and practice of the Nyingma tradition.
+              </p>
               <p>Today, the monastery continues to nurture young monks, preserving ancient wisdom and ensuring the Dharma remains alive for generations to come.</p>
             </div>
             <Link to="/history" className="group inline-flex items-center gap-2 text-maroon text-[13px] font-semibold tracking-widest uppercase mt-4">

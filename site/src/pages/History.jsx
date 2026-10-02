@@ -52,13 +52,13 @@ export default function History() {
                   Following the events of 1959, Tibetans lost their homeland and sought refuge in India. During this difficult period of exile and displacement, His Holiness recognized the urgent need to establish a monastery to prevent the degeneration of the Buddha's teachings. To preserve the Nyingma lineage, His Holiness the 14th Dalai Lama requested Kyabje Dudjom Rinpoche Jigdral Yeshe Dorje to serve as the Supreme Head of the Nyingma tradition.
                 </p>
                 <p className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
-                  Keeping His Holiness the Dalai Lama's request deeply in his heart, Kyabje Dudjom Rinpoche resolved to establish a monastery. With the support of the Government of Odisha in acquiring land and the guidance of the Tibetan Government-in-Exile, he chose Odisha as the location for <strong className="font-semibold text-ink">Dundul Raptenling Monastery</strong>.
+                  Keeping His Holiness the Dalai Lama's request deeply in his heart, Kyabje Dudjom Rinpoche resolved to establish a monastery. With the support of the Government of Odisha in acquiring land and the guidance of the Tibetan Government-in-Exile, he chose Odisha as the location for Dundul Raptenling Monastery.
                 </p>
                 <p className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
-                  Kyabje Dudjom Rinpoche selected Odisha because, according to the <em>Hevajra Tantra</em>, it is one of the Twenty-Four Great Sacred Places. Odisha is also regarded as the celestial abode of Vajrayogini. Kyabje Rinpoche sent a letter to the Tibetan community of Pemako, the sacred region of southern Tibet, explaining his vision to establish a Nyingma monastery and settlement in Odisha and inviting them to join him. Many responded to his call.
+                  Kyabje Dudjom Rinpoche selected Odisha because, according to the Hevajra Tantra, it is one of the Twenty-Four Great Sacred Places. Odisha is also regarded as the celestial abode of Oddiyana. Kyabje Rinpoche sent a letter to the Tibetan community of Pemako, the sacred region of southern Tibet, explaining his vision to establish a Nyingma monastery and settlement in Odisha and inviting them to join him. Many responded to his call.
                 </p>
                 <p className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
-                  In 1961, Kyabje Rinpoche bestowed the name <strong className="font-semibold text-ink">Dundul Raptenling</strong> upon the monastery established at Camp No. 3 of the Odisha Tibetan Refugee Settlement. Initially, the monastery could accommodate approximately one hundred members of the sangha. A sacred assembly of statues representing the Cho-Long-Trul Sum—Amitabha, Avalokiteshvara, and Guru Padmasambhava—was installed. Troma was placed on the far right and Dorje Drolö on the far left. As in Tibet, many practitioners devoted themselves to meditation retreat.
+                  In 1961, Kyabje Rinpoche bestowed the name Dundul Raptenling upon the monastery established at Camp No. 3 of the Odisha Tibetan Refugee Settlement. Initially, the monastery could accommodate approximately one hundred members of the sangha. A sacred assembly of statues representing the Cho-Long-Trul Sum—Amitabha, Avalokiteshvara, and Guru Padmasambhava—was installed. Troma was placed on the far right and Dorje Drolö on the far left. As in Tibet, many practitioners devoted themselves to meditation retreat.
                 </p>
                 <p className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
                   Under the supervision of Lama Sherab Dorje Rinpoche and Lama Dorje Namgyal Rinpoche, construction of a three-story tsuglagkhang (monastery temple) began around 1969. Due to limited financial resources, the project required another ten years to complete. These same constraints also prevented the monastery from being built exactly according to Kyabje Rinpoche's original design. On February 3, 1979, His Holiness the 14th Dalai Lama consecrated and inaugurated the newly completed Dundul Raptenling Monastery.
@@ -67,7 +67,7 @@ export default function History() {
                   Over the years, Kyabje Dudjom Rinpoche's sons and grandsons, including Kyabje Shenphen Dawa Norbu Rinpoche, Kyabje Dzongsar Khyentse Rinpoche, Kyabje Garab Dorje Rinpoche, and many other disciples of His Holiness Dudjom Rinpoche, have helped protect and preserve the monastery and its lineage.
                 </p>
                 <p className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
-                  Today, the unmistaken reincarnation of His Holiness Dudjom Rinpoche has appeared as <strong className="font-semibold text-ink">Kyabje Dudjom Sangye Pema Shepa Rinpoche</strong>. As foretold in prophecy:
+                  Today, the unmistaken reincarnation of His Holiness Dudjom Rinpoche has appeared as Kyabje Dudjom Sangye Pema Shepa Rinpoche. As foretold in prophecy:
                 </p>
                 <blockquote className="p-lg bg-cream border-l-4 border-gold italic font-subheading text-subheading text-ink-mid my-xl leading-relaxed">
                   "In his former life, he was Vajradhara Jigdral Yeshe Dorje.<br />
@@ -94,13 +94,13 @@ export default function History() {
           </div>
           <div className="max-w-3xl mx-auto space-y-lg text-center">
             <p className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
-              The top floor is known as <strong className="font-semibold text-maroon">Chöku Zhingkham</strong>. At its center is a statue of Choeku Öpakme (Amitabha Buddha). To the right is Dorsem Yab-Yum (Vajrasattva in union), and to the left is a Guru Tsokye Thukthik statue.
+              The top floor is known as Choe ku shingkham (heaven). It has a statue of Choeku Woe Pak May [Amitabha]. On the right side is Dorsem yab yum, on the left is a Guru Tso-Gye-Thuk-Thig statue.
             </p>
             <p className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
-              The middle floor is known as <strong className="font-semibold text-maroon">Longku Zhingkham</strong>. At its center stands a ten-foot-high statue of Avalokiteshvara (Chak Tong Chen Tong, the Thousand-Armed Avalokiteshvara). To the right is Jampelyang (Manjushri), and to the left is Vajrapani. In front of Avalokiteshvara is a statue of Kyabje Dudjom Jigdral Yeshe Dorje. To the right are Kyabje Rinpoche's private chambers, including both the master and smaller bedrooms. To the left is the monastery library, which preserves many important collections of Buddhist scriptures and lineage treasures, including the Gyalwa Kangyur and Tengyur, Nyingma Gyübum, Nyingma Kama, Rinchen Terdzö, Dudjom Rinpoche Kathang, and various collected works of other great lineage masters.
+              The middle floor is known as Longku Zhingkham. At its center stands a ten-foot-high statue of Avalokiteshvara (Chak Tong Chen Tong, the Thousand-Armed Avalokiteshvara). To the right is Jampelyang (Manjushri), and to the left is Vajrapani. In front of Avalokiteshvara is a statue of Kyabje Dudjom Jigdral Yeshe Dorje. To the right are Kyabje Rinpoche's private chambers, including both the master and smaller bedrooms. To the left is the monastery library, which preserves many important collections of Buddhist scriptures and lineage treasures, including the Gyalwa Kangyur and Tengyur, Nyingma Gyübum, Nyingma Kama, Rinchen Terdzö, Dudjom Rinpoche Kathang, and various collected works of other great lineage masters.
             </p>
             <p className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
-              The ground floor is known as <strong className="font-semibold text-maroon">Tulku Zhingkham</strong>. At its center is a statue of Shakyamuni Buddha. To the right of Buddha is Guru Nangsi Zilnön, and further to the right is Guru Dorje Drolö. To the left of Buddha is Tamdrin Yangthrö (Hayagriva), and further left is Palchen Dorje Zhönnu Phurpa (Vajrakilaya).
+              The ground floor is known as Tulku Zhingkham. At its center is a statue of Shakyamuni Buddha. To the right of Buddha is Guru Nangsi Zilnön, and further to the right is Guru Dorje Drolö. To the left of Buddha is Tamdrin Yangthrö (Hayagriva), and further left is Palchen Dorje Zhönnu Phurpa (Vajrakilaya).
             </p>
           </div>
           <div className="mt-3xl lg:mt-4xl">
@@ -133,7 +133,7 @@ export default function History() {
                 The monastery is situated at Camp No. 3 of the Phuntsok Ling Tibetan Settlement in Odisha. According to sacred geography, it is surrounded by holy mountains, including the mountain of Vajravarahi to the south and the Three Families of the Victorious Ones to the west.
               </p>
               <p className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
-                Because of its connection to Oḍḍiyāna and its auspicious setting, Dundul Raptenling has become a place where the teachings of the Nyingma tradition continue to flourish. The monastery is revered as <strong className="font-semibold text-ink">Dundul Raptenling, the Seat of Old Father Jigdral Yeshe Dorje</strong>, and remains a center for study, practice, retreat, and the preservation of the Dudjom lineage for future generations.
+                Because of its connection to Oḍḍiyāna and its auspicious setting, Dundul Raptenling has become a place where the teachings of the Nyingma tradition continue to flourish. The monastery is revered as Dundul Raptenling, the Seat of Old Father Jigdral Yeshe Dorje, and remains a center for study, practice, retreat, and the preservation of the Dudjom lineage for future generations.
               </p>
               <div className="flex flex-wrap gap-md mt-base">
                 <span className="px-md py-sm bg-cream text-maroon border border-gold/20 font-button-text text-button-text uppercase tracking-wider">Camp No. 3</span>

@@ -7,6 +7,9 @@
     "public": "dist",
     "trailingSlash": false,
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "redirects": [
+      { "source": "/lama-sonam-tashi", "destination": "/presidents/lama-sonam-tashi-rinpoche", "type": 301 }
+    ],
     "rewrites": [
       { "source": "**", "destination": "/index.html" }
     ],
