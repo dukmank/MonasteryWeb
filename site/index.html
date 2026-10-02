@@ -64,8 +64,10 @@
       html.lang-tib :where(p,span,a,li,button,label,td,th,h1,h2,h3,h4,h5,h6,strong,em,b,small,blockquote,address,figcaption,dt,dd,div):not(:has(*)):not(.material-symbols-outlined):not(.ti) {
         zoom: var(--tib-scale);
       }
-      html.lang-tib .material-symbols-outlined,
-      html.lang-tib .ti { font-family: "Material Symbols Outlined", "tabler-icons" !important; zoom: 1; }
+      /* Icon fonts keep their own family in Tibetan mode (each set needs its own font,
+         otherwise Tabler icons render as unrelated Material Symbols glyphs). */
+      html.lang-tib .material-symbols-outlined { font-family: "Material Symbols Outlined" !important; zoom: 1; }
+      html.lang-tib .ti, html.lang-tib .ti::before { font-family: "tabler-icons" !important; zoom: 1; }
     </style>
     <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
 
