@@ -4,6 +4,7 @@ import PageBanner from "../components/PageBanner.jsx";
 import { PUJA_LIST, PUJA_CATEGORIES } from "../data/pujaList.js";
 import { createItem } from "../lib/content.js";
 import { addToMailerLite } from "../lib/mailerlite.js";
+import { useLang } from "../lib/i18n.jsx";
 
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
 
@@ -12,14 +13,16 @@ const fmt = (n) => {
   return Number.isFinite(num) ? num.toLocaleString("en-IN") : n;
 };
 
-function PujaCard(p) {
+// showName: false in Tibetan mode, where the English name would be translated
+// into the same Tibetan title already shown above it.
+function PujaCard(p, showName) {
   return (
     <div key={`${p.cat}-${p.si}`} className="p-6 rounded-lg border border-outline-variant bg-white transition-all hover:shadow-md flex flex-col">
       <div className="flex justify-between items-start gap-3 mb-3">
         <span className="font-serif text-maroon/70 text-base leading-snug">{p.tib}</span>
         <span className="text-gold-dark font-semibold whitespace-nowrap">₹{fmt(p.amount)}</span>
       </div>
-      {p.en && <h4 className="text-[16px] text-ink leading-snug mb-3">{p.en}</h4>}
+      {showName && p.en && <h4 className="text-[16px] text-ink leading-snug mb-3">{p.en}</h4>}
       <div className="flex items-center justify-between mt-auto pt-1">
         <span className="flex items-center gap-2 text-[11px] text-ink-light uppercase tracking-wider"><i className="ti ti-calendar text-gold"></i> {p.days}</span>
       </div>
@@ -28,6 +31,7 @@ function PujaCard(p) {
 }
 
 export default function PujaList() {
+  const { lang } = useLang();
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState({});
 
@@ -141,7 +145,7 @@ export default function PujaList() {
               <div className="px-6 py-12 text-center text-ink-light text-sm">Không tìm thấy puja phù hợp với “{query}”.</div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filtered.map(PujaCard)}
+                {filtered.map((p) => PujaCard(p, lang !== "TIB"))}
               </div>
             )
           ) : (
@@ -156,7 +160,7 @@ export default function PujaList() {
                       <div className="h-[1px] w-12 bg-gold/40 mx-auto mt-2"></div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {visible.map(PujaCard)}
+                      {visible.map((p) => PujaCard(p, lang !== "TIB"))}
                     </div>
                     {items.length > 3 && (
                       <div className="text-center mt-6">
