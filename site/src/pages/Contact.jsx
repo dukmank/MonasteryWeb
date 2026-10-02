@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createItem } from "../lib/content.js";
+import { addToMailerLite } from "../lib/mailerlite.js";
 import PageBanner from "../components/PageBanner.jsx";
 
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
@@ -8,6 +9,7 @@ export default function Contact() {
   const [status, setStatus] = useState("idle"); // idle | sending | sent
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+  const [newsletter, setNewsletter] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +23,10 @@ export default function Contact() {
       console.warn("save message:", err?.message);
     }
 
-    // 2) Gửi email qua Web3Forms (nếu đã cấu hình key)
+    // 2) Add the sender to MailerLite ("Website: Contact form", + newsletter if ticked)
+    await addToMailerLite({ email: form.email, name: form.name, source: "contact", newsletter });
+
+    // 3) Gửi email qua Web3Forms (nếu đã cấu hình key)
     try {
       if (WEB3FORMS_KEY) {
         await fetch("https://api.web3forms.com/submit", {
@@ -43,6 +48,7 @@ export default function Contact() {
 
     setStatus("sent");
     setForm({ name: "", email: "", subject: "", message: "" });
+    setNewsletter(false);
     setTimeout(() => setStatus("idle"), 4000);
   };
 
@@ -122,6 +128,10 @@ export default function Contact() {
                     rows="5"
                   ></textarea>
                 </div>
+                <label className="flex items-start gap-3 text-[13px] text-ink-mid cursor-pointer">
+                  <input type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} className="mt-0.5 accent-maroon" />
+                  <span>Send me news and updates from the monastery</span>
+                </label>
                 <button
                   className={`${sent ? "bg-green-600 text-white" : "bg-gold text-ink"} px-10 py-4 rounded-lg font-button-text text-button-text font-semibold hover:bg-gold-dark transition-all duration-300 shadow-lg inline-flex items-center gap-3 active:scale-95 group`}
                   type="submit"
@@ -165,7 +175,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <h4 className="font-label-eyebrow text-maroon-mid mb-xs">EMAIL</h4>
-                      <a className="font-body-md text-ink-mid hover:text-maroon transition-colors" href="mailto:dundul.rapten@gmail.com">dundul.rapten@gmail.com</a>
+                      <a className="font-body-md text-ink-mid hover:text-maroon transition-colors" href="mailto:contact@dundulraptenling.org">contact@dundulraptenling.org</a>
                     </div>
                   </div>
                   {/* Phone */}

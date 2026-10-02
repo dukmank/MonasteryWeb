@@ -24,8 +24,8 @@ export default function Footer() {
             </p>
             <p className="flex items-center gap-2">
               <i className="ti ti-mail text-gold text-[15px] shrink-0"></i>
-              <a className="hover:text-gold transition-colors" href="mailto:dundul.rapten@gmail.com">
-                dundul.rapten@gmail.com
+              <a className="hover:text-gold transition-colors" href="mailto:contact@dundulraptenling.org">
+                contact@dundulraptenling.org
               </a>
             </p>
             <p className="flex items-center gap-2">
@@ -107,7 +107,7 @@ export default function Footer() {
       {/* Bottom bar: Copyright | Terms of Use | Privacy Policy */}
       <div className="max-w-7xl mx-auto pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="text-[10px] text-white/40 tracking-[0.2em] uppercase">
-          © 2025 Dundul Raptenling Monastery · All Rights Reserved
+          © 2026 Dundul Raptenling Monastery · All Rights Reserved
         </div>
         <div className="flex items-center gap-6 text-[10px] text-white/40 tracking-[0.2em] uppercase">
           <Link className="hover:text-gold transition-colors" to="/terms">Terms of Use</Link>

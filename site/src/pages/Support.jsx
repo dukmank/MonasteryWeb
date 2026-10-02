@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import PageBanner from "../components/PageBanner.jsx";
 import { PUJA_LIST } from "../data/pujaList.js";
 import { createItem } from "../lib/content.js";
+import { addToMailerLite } from "../lib/mailerlite.js";
 
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
 
@@ -45,6 +46,7 @@ export default function Support() {
   const [pf, setPf] = useState({ puja: "", name: "", email: "", dedication: "", intention: "" });
   const [pStatus, setPStatus] = useState("idle");
   const setField = (k) => (e) => setPf((f) => ({ ...f, [k]: e.target.value }));
+  const [newsletter, setNewsletter] = useState(false);
 
   const submitPuja = async (e) => {
     e.preventDefault();
@@ -57,6 +59,8 @@ export default function Support() {
       message: `Puja: ${pf.puja}\nDedication: ${pf.dedication}\nIntention: ${pf.intention}`,
     };
     try { await createItem("messages", { ...payload, type: "puja_request" }); } catch (err) { console.warn(err?.message); }
+    // Add the requester to MailerLite ("Website: Puja requests", + newsletter if ticked)
+    await addToMailerLite({ email: pf.email, name: pf.name, source: "puja", newsletter, puja: pf.puja });
     try {
       if (WEB3FORMS_KEY) {
         await fetch("https://api.web3forms.com/submit", {
@@ -68,6 +72,7 @@ export default function Support() {
     } catch (err) { console.warn(err?.message); }
     setPStatus("sent");
     setPf({ puja: "", name: "", email: "", dedication: "", intention: "" });
+    setNewsletter(false);
     setTimeout(() => setPStatus("idle"), 4000);
   };
 
@@ -157,6 +162,10 @@ export default function Support() {
                   <label className="block text-[13px] font-medium text-ink-mid mb-1.5">Intention</label>
                   <textarea value={pf.intention} onChange={setField("intention")} className="w-full bg-white border border-gold/20 rounded-lg px-4 py-2.5 text-[14px] min-h-[100px]" placeholder="Briefly state the purpose..."></textarea>
                 </div>
+                <label className="flex items-start gap-3 text-[13px] text-ink-mid cursor-pointer">
+                  <input type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} className="mt-0.5 accent-maroon" />
+                  <span>Send me news and updates from the monastery</span>
+                </label>
                 <button type="submit" disabled={pStatus === "sending"} className={`w-full py-4 font-medium tracking-widest uppercase text-[13px] rounded shadow-md transition-all ${pStatus === "sent" ? "bg-green-600 text-white" : "bg-gold text-white hover:bg-gold-dark"}`}>
                   {pStatus === "idle" && "Submit Request"}
                   {pStatus === "sending" && "Sending…"}

@@ -25,7 +25,7 @@ export default function Privacy() {
           </section>
           <section>
             <h2 className="font-subheading text-subheading text-maroon mb-3">Contact</h2>
-            <p>If you have questions about this Privacy Policy, please contact us at <a className="text-maroon hover:text-maroon-dark underline" href="mailto:dundul.rapten@gmail.com">dundul.rapten@gmail.com</a>.</p>
+            <p>If you have questions about this Privacy Policy, please contact us at <a className="text-maroon hover:text-maroon-dark underline" href="mailto:contact@dundulraptenling.org">contact@dundulraptenling.org</a>.</p>
           </section>
         </div>
       </main>
