@@ -186,11 +186,11 @@ function FileField({ field, value, onChange }) {
 // filled by machine translation on save and marked "auto" (doc.i18nAuto keeps the
 // English each auto translation was made from); typing in a box makes it manual.
 // Trimmed text of a field value; anything that is not a string counts as empty.
-const text = (v) => (typeof v === "string" ? v.trim() : "");
+const trimmed = (v) => (typeof v === "string" ? v.trim() : "");
 
 function OtherLanguages({ field, data, set, setAuto }) {
   const auto = data.i18nAuto || {};
-  const filled = CMS_LANGS.filter((l) => text(data[`${field.name}_${l.code}`])).length;
+  const filled = CMS_LANGS.filter((l) => trimmed(data[`${field.name}_${l.code}`])).length;
   const multiline = field.type === "textarea";
   return (
     <details className="group border border-gold/25 rounded-sm bg-cream/30">
@@ -201,7 +201,7 @@ function OtherLanguages({ field, data, set, setAuto }) {
       <div className="px-3 pb-3 space-y-3">
         {CMS_LANGS.map((l) => {
           const key = `${field.name}_${l.code}`;
-          const isAuto = key in auto && text(data[key]);
+          const isAuto = key in auto && trimmed(data[key]);
           const props = {
             value: data[key] || "",
             lang: l.code,
@@ -275,11 +275,11 @@ export default function CollectionForm() {
       const jobs = {};
       for (const f of coll.fields) {
         if (!f.bilingual) continue; // only text fields are translated (not images, tick boxes…)
-        const en = text(data[f.name]);
+        const en = trimmed(data[f.name]);
         if (!en) continue;
         for (const l of CMS_LANGS) {
           const key = `${f.name}_${l.code}`;
-          const empty = !text(data[key]);
+          const empty = !trimmed(data[key]);
           const stale = key in auto && auto[key] !== en;
           if (empty || stale) {
             fields[f.name] = data[f.name];
@@ -293,10 +293,10 @@ export default function CollectionForm() {
         try {
           const tr = await translateFields(fields, jobs);
           for (const [code, vals] of Object.entries(tr)) {
-            for (const [name, text] of Object.entries(vals || {})) {
-              if (!text) continue;
-              out[`${name}_${code}`] = text;
-              auto[`${name}_${code}`] = text(data[name]);
+            for (const [name, translated] of Object.entries(vals || {})) {
+              if (!translated) continue;
+              out[`${name}_${code}`] = translated;
+              auto[`${name}_${code}`] = trimmed(data[name]);
             }
           }
         } catch (err) {
