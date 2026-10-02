@@ -9,7 +9,7 @@ export const useLang = () => useContext(LangCtx);
 export const LANGUAGES = [
   { code: "EN", short: "EN", html: "en", label: "English" },
   { code: "VI", short: "VI", html: "vi", label: "Tiếng Việt" },
-  { code: "ZH", short: "ZH", html: "zh-Hans", label: "中文" },
+  { code: "ZH", short: "ZH", html: "zh-HK", label: "繁體中文" },
   { code: "HI", short: "HI", html: "hi", label: "हिन्दी" },
   { code: "TIB", short: "BO", html: "bo", label: "བོད་ཡིག" },
   { code: "OR", short: "OR", html: "or", label: "ଓଡ଼ିଆ" },
@@ -23,14 +23,15 @@ const LOADERS = {
   HI: () => import("./i18n/hi.json"),
 };
 
-// Pick a CMS document's field for the active language. Falls back to the
-// English field when the Tibetan (`<field>_bo`) value is missing. Other
-// languages use the English field; the DOM translator then swaps it if the
-// dictionary has it.
+// Site language -> suffix of the CMS field that holds that language.
+const CMS_SUFFIX = { TIB: "bo", ZH: "zh", VI: "vi", HI: "hi", OR: "or" };
+
+// Pick a CMS document's field for the active language (`<field>_<suffix>`),
+// falling back to the English field when that language is empty.
 export function localized(doc, field, lang) {
   if (!doc) return "";
-  if (lang === "TIB") return doc[`${field}_bo`] || doc[field] || "";
-  return doc[field] || "";
+  const sfx = CMS_SUFFIX[lang];
+  return (sfx && doc[`${field}_${sfx}`]) || doc[field] || "";
 }
 
 // Original-value stores so we can restore English when switching language.

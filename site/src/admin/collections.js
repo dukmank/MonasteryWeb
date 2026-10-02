@@ -3,6 +3,16 @@
 //
 // field types: text | textarea | select | image | images | pdf | url | bool | date
 
+// Languages a "bilingual" field can carry besides English. Each is stored as
+// `<field>_<code>`; empty ones are machine-translated on save (see CollectionForm).
+export const CMS_LANGS = [
+  { code: "bo", label: "བོད་ཡིག · Tibetan" },
+  { code: "zh", label: "繁體中文 · Chinese (Hong Kong)" },
+  { code: "vi", label: "Tiếng Việt · Vietnamese" },
+  { code: "hi", label: "हिन्दी · Hindi" },
+  { code: "or", label: "ଓଡ଼ିଆ · Odia" },
+];
+
 export const COLLECTIONS = {
   news: {
     key: "news",
@@ -121,6 +131,7 @@ export const COLLECTIONS = {
     key: "messages",
     label: "Messages",
     labelVi: "Contact Messages",
+    inbox: true, // list: multi-select + delete; no "Add New"; reply by email
     icon: "mail",
     titleField: "name",
     subtitleField: "email",
@@ -137,6 +148,7 @@ export const COLLECTIONS = {
     key: "subscribers",
     label: "Subscribers",
     labelVi: "Subscribers",
+    inbox: true, // list: multi-select + delete, CSV export, sync to MailerLite
     icon: "alternate_email",
     titleField: "email",
     subtitleField: null,
@@ -155,7 +167,7 @@ export function emptyDoc(coll) {
     if (f.type === "bool") out[f.name] = f.default ?? false;
     else if (f.type === "images") out[f.name] = [];
     else out[f.name] = f.default ?? "";
-    if (f.bilingual) out[`${f.name}_bo`] = "";
+    if (f.bilingual) for (const l of CMS_LANGS) out[`${f.name}_${l.code}`] = "";
   }
   return out;
 }

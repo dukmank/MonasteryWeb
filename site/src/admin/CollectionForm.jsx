@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { COLLECTIONS, emptyDoc } from "./collections.js";
+import { COLLECTIONS, CMS_LANGS, emptyDoc } from "./collections.js";
+import { translateFields } from "../lib/translate.js";
 import { getOne, createItem, updateItem } from "../lib/content.js";
 import { uploadImage, uploadFile, cloudinaryEnabled } from "../lib/cloudinary.js";
 
@@ -180,6 +181,56 @@ function FileField({ field, value, onChange }) {
   );
 }
 
+// Collapsible per-field box for the non-English versions. Empty boxes are
+// filled by machine translation on save and marked "auto" (doc.i18nAuto keeps the
+// English each auto translation was made from); typing in a box makes it manual.
+function OtherLanguages({ field, data, set, setAuto }) {
+  const auto = data.i18nAuto || {};
+  const filled = CMS_LANGS.filter((l) => (data[`${field.name}_${l.code}`] || "").trim()).length;
+  const multiline = field.type === "textarea";
+  return (
+    <details className="group border border-gold/25 rounded-sm bg-cream/30">
+      <summary className="cursor-pointer select-none px-3 py-2 text-[11px] font-semibold uppercase tracking-widest text-maroon/70 flex items-center gap-2">
+        <span className="material-symbols-outlined text-[16px] transition-transform group-open:rotate-90">chevron_right</span>
+        Other languages <span className="normal-case tracking-normal font-normal text-ink-light">· {filled}/{CMS_LANGS.length} filled · empty ones are translated automatically on save</span>
+      </summary>
+      <div className="px-3 pb-3 space-y-3">
+        {CMS_LANGS.map((l) => {
+          const key = `${field.name}_${l.code}`;
+          const isAuto = key in auto && (data[key] || "").trim();
+          const props = {
+            value: data[key] || "",
+            lang: l.code,
+            onChange: (e) => {
+              set(key, e.target.value);
+              setAuto(key, false);
+            },
+            placeholder: "Leave empty to translate automatically",
+            className: "w-full border border-cream-dark rounded-sm px-3 py-2 bg-white text-ink focus:border-gold outline-none leading-relaxed",
+          };
+          return (
+            <div key={l.code}>
+              <label className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-ink-light mb-1">
+                {l.label}
+                {isAuto && <span className="normal-case tracking-normal bg-gold/15 text-gold-dark px-1.5 py-0.5 rounded text-[10px]">auto — review</span>}
+              </label>
+              {multiline ? <textarea rows={Math.min(field.rows || 4, 6)} {...props} /> : <input type="text" {...props} />}
+            </div>
+          );
+        })}
+      </div>
+    </details>
+  );
+}
+
+// mailto: link that opens the admin's own email app with the reply prefilled.
+export function replyLink(m) {
+  const subject = m.subject ? `Re: ${m.subject.replace(/^Re:\s*/i, "")}` : "Re: your message to Dundul Raptenling Monastery";
+  const quoted = String(m.message || "").split("\n").map((l) => `> ${l}`).join("\n");
+  const body = `Dear ${m.name || "friend"},\n\n\n\n— Dundul Raptenling Monastery\ncontact@dundulraptenling.org\n\n${quoted}`;
+  return `mailto:${encodeURIComponent(m.email || "")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 export default function CollectionForm() {
   const { coll: collKey, id } = useParams();
   const coll = COLLECTIONS[collKey];
@@ -190,6 +241,7 @@ export default function CollectionForm() {
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
 
   useEffect(() => {
     if (isNew || !coll) return;
@@ -206,23 +258,67 @@ export default function CollectionForm() {
   if (!coll) return <div className="p-8">Section not found.</div>;
 
   const set = (name, val) => setData((d) => ({ ...d, [name]: val }));
+  const setAuto = (key, srcOrFalse) =>
+    setData((d) => {
+      const next = { ...(d.i18nAuto || {}) };
+      if (srcOrFalse === false) delete next[key];
+      else next[key] = srcOrFalse;
+      return { ...d, i18nAuto: next };
+    });
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
     setSaving(true);
     try {
-      // keep only schema fields + published
-      const payload = {};
+      // Machine-translate language boxes that are empty, or were auto-translated
+      // from English that has since changed. Manual translations are never touched.
+      const auto = { ...(data.i18nAuto || {}) };
+      const out = { ...data };
+      const fields = {};
+      const jobs = {};
       for (const f of coll.fields) {
-        payload[f.name] = data[f.name] ?? (f.type === "bool" ? false : f.type === "images" ? [] : "");
-        if (f.bilingual) payload[`${f.name}_bo`] = data[`${f.name}_bo`] ?? "";
+        const en = (data[f.name] || "").trim();
+        if (!f.bilingual || !en) continue;
+        for (const l of CMS_LANGS) {
+          const key = `${f.name}_${l.code}`;
+          const empty = !(data[key] || "").trim();
+          const stale = key in auto && auto[key] !== en;
+          if (empty || stale) {
+            fields[f.name] = data[f.name];
+            (jobs[l.code] ||= []).push(f.name);
+          }
+        }
       }
+      let warn = "";
+      if (Object.keys(jobs).length) {
+        setNotice("Translating into other languages…");
+        try {
+          const tr = await translateFields(fields, jobs);
+          for (const [code, vals] of Object.entries(tr)) {
+            for (const [name, text] of Object.entries(vals || {})) {
+              if (!text) continue;
+              out[`${name}_${code}`] = text;
+              auto[`${name}_${code}`] = (data[name] || "").trim();
+            }
+          }
+        } catch (err) {
+          warn = `Saved, but automatic translation failed: ${err.message} Empty languages will show the English text.`;
+        }
+      }
+      // keep only schema fields + published
+      const payload = coll.fields.some((f) => f.bilingual) ? { i18nAuto: auto } : {};
+      for (const f of coll.fields) {
+        payload[f.name] = out[f.name] ?? (f.type === "bool" ? false : f.type === "images" ? [] : "");
+        if (f.bilingual) for (const l of CMS_LANGS) payload[`${f.name}_${l.code}`] = out[`${f.name}_${l.code}`] ?? "";
+      }
+      if (warn) window.alert(warn);
       if (isNew) await createItem(collKey, payload);
       else await updateItem(collKey, id, payload);
       navigate(`/admin/${collKey}`);
     } catch (err) {
       setError(err.message || "Failed to save");
+      setNotice("");
       setSaving(false);
     }
   };
@@ -245,6 +341,36 @@ export default function CollectionForm() {
           {isNew ? "Add" : "Edit"} · {coll.labelVi}
         </h1>
       </header>
+
+      {coll.key === "messages" && !isNew && (
+        <div className="m-8 mb-0 max-w-2xl bg-white border border-gold/20 rounded-lg p-5 space-y-3">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="font-medium text-ink">{data.name || "(no name)"} <span className="text-ink-light font-normal">&lt;{data.email}&gt;</span></div>
+              <div className="text-sm text-ink-mid">{data.subject || "(no subject)"}</div>
+            </div>
+            {data.repliedAt && (
+              <span className="shrink-0 text-[10px] uppercase tracking-widest bg-green-100 text-green-800 px-2 py-1 rounded">
+                Replied {new Date(data.repliedAt).toLocaleDateString()}
+              </span>
+            )}
+          </div>
+          <p className="whitespace-pre-line text-ink-mid text-[15px] leading-relaxed border-l-2 border-gold/30 pl-3">{data.message}</p>
+          <a
+            href={replyLink(data)}
+            onClick={() => {
+              const at = new Date().toISOString();
+              set("repliedAt", at);
+              updateItem("messages", id, { repliedAt: at }).catch(() => {});
+            }}
+            className="inline-flex items-center gap-2 bg-maroon text-white px-4 py-2 rounded-sm text-[11px] font-semibold tracking-widest uppercase hover:bg-maroon-mid transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px]">reply</span>
+            Reply by email
+          </a>
+          <p className="text-[12px] text-ink-light">Opens your email app with the reply ready; the message is then marked as replied.</p>
+        </div>
+      )}
 
       <form onSubmit={submit} className="p-8 max-w-2xl space-y-6">
         {coll.fields.map((f) => {
@@ -299,17 +425,7 @@ export default function CollectionForm() {
                     className="w-full border border-cream-dark rounded-sm px-3 py-2 bg-white text-ink focus:border-gold outline-none leading-relaxed"
                   />
                 </div>
-                {f.bilingual && (
-                  <div>
-                    <label className="block text-[11px] font-semibold uppercase tracking-widest text-maroon/70 mb-2">{f.label} · བོད་ཡིག (Tibetan)</label>
-                    <textarea
-                      rows={f.rows || 4}
-                      value={data[`${f.name}_bo`] || ""}
-                      onChange={(e) => set(`${f.name}_bo`, e.target.value)}
-                      className="w-full border border-gold/30 rounded-sm px-3 py-2 bg-cream/40 text-ink focus:border-gold outline-none leading-relaxed"
-                    />
-                  </div>
-                )}
+                {f.bilingual && <OtherLanguages field={f} data={data} set={set} setAuto={setAuto} />}
               </div>
             );
           }
@@ -326,22 +442,13 @@ export default function CollectionForm() {
                   className="w-full border-b-2 border-cream-dark focus:border-gold outline-none py-2 text-ink bg-transparent"
                 />
               </div>
-              {f.bilingual && (
-                <div>
-                  <label className="block text-[11px] font-semibold uppercase tracking-widest text-maroon/70 mb-2">{f.label} · བོད་ཡིག (Tibetan)</label>
-                  <input
-                    type="text"
-                    value={data[`${f.name}_bo`] || ""}
-                    onChange={(e) => set(`${f.name}_bo`, e.target.value)}
-                    className="w-full border-b-2 border-gold/30 focus:border-gold outline-none py-2 text-ink bg-cream/40 px-2"
-                  />
-                </div>
-              )}
+              {f.bilingual && <OtherLanguages field={f} data={data} set={set} setAuto={setAuto} />}
             </div>
           );
         })}
 
         {error && <p className="text-error text-sm">{error}</p>}
+        {notice && saving && <p className="text-ink-light text-sm">{notice}</p>}
 
         <div className="flex gap-3 pt-4">
           <button
