@@ -6,7 +6,8 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null &&
              request.auth.uid in [
-               "7RAreEnN7HbpPlZpN5S8vag6vHo1"   // vajralotusfoundation@gmail.com
+               "7RAreEnN7HbpPlZpN5S8vag6vHo1",  // vajralotusfoundation@gmail.com
+               "GN6NeDLPVGZzwyROnhgjVeOf97G3"   // mee (handover admin)
              ];
     }
 
