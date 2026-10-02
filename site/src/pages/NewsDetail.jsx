@@ -51,6 +51,16 @@ export default function NewsDetail() {
       <article className="max-w-3xl mx-auto px-base sm:px-lg py-4xl">
         {date && <p className="font-caption text-ink-light mb-lg">{date}</p>}
 
+        {doc.category === "Zangdok Palri" && (
+          <aside className="mb-xl border-l-2 border-gold bg-cream px-base py-3 font-body-md text-ink-mid">
+            <span>Part of Zangdok Palri</span>
+            {" · "}
+            <a href="https://2028.zangdokpalriodisha.com/#register" target="_blank" rel="noreferrer" className="text-maroon underline hover:text-gold">
+              <span>Register for the 2028 consecration</span> →
+            </a>
+          </aside>
+        )}
+
         <div className="font-body-md text-body-md text-ink-mid space-y-4 whitespace-pre-line leading-relaxed">
           {(body || "").split(/\n{2,}/).map((para, i) => (
             <p key={i}>
