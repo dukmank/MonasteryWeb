@@ -4,6 +4,7 @@ import PageBanner from "../components/PageBanner.jsx";
 import { PUJA_LIST } from "../data/pujaList.js";
 import { createItem } from "../lib/content.js";
 import { addToMailerLite } from "../lib/mailerlite.js";
+import { useLang } from "../lib/i18n.jsx";
 
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
 
@@ -43,6 +44,7 @@ const ANNUAL = [
 ];
 
 export default function Support() {
+  const { lang } = useLang();
   const [pf, setPf] = useState({ puja: "", name: "", email: "", dedication: "", intention: "" });
   const [pStatus, setPStatus] = useState("idle");
   const setField = (k) => (e) => setPf((f) => ({ ...f, [k]: e.target.value }));
@@ -184,7 +186,7 @@ export default function Support() {
                   <div key={p.name} className="p-5 bg-white border-l-4 border-gold rounded shadow-sm hover:shadow-md transition-all flex justify-between items-start gap-4">
                     <div>
                       <div className="font-serif text-maroon/70 text-[15px] leading-snug">{p.tib}</div>
-                      <h4 className="font-headline text-[16px] text-ink-mid leading-snug mt-0.5">{p.name}</h4>
+                      {lang !== "TIB" && <h4 className="font-headline text-[16px] text-ink-mid leading-snug mt-0.5">{p.name}</h4>}
                       <p className="text-[12px] text-ink-light mt-1">{p.desc}</p>
                     </div>
                     <div className="text-right shrink-0">
