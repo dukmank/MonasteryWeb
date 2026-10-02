@@ -223,12 +223,24 @@ function OtherLanguages({ field, data, set, setAuto }) {
   );
 }
 
-// mailto: link that opens the admin's own email app with the reply prefilled.
-export function replyLink(m) {
+// Reply prefilled for the sender. The monastery mail is Google Workspace, so the
+// main button opens a Gmail compose window; mailto: is kept for a desktop email app.
+function replyParts(m) {
   const subject = m.subject ? `Re: ${m.subject.replace(/^Re:\s*/i, "")}` : "Re: your message to Dundul Raptenling Monastery";
-  const quoted = String(m.message || "").split("\n").map((l) => `> ${l}`).join("\n");
+  let original = String(m.message || "");
+  if (original.length > 1500) original = original.slice(0, 1500) + "…"; // keep the URL a safe length
+  const quoted = original.split("\n").map((l) => `> ${l}`).join("\n");
   const body = `Dear ${m.name || "friend"},\n\n\n\n— Dundul Raptenling Monastery\ncontact@dundulraptenling.org\n\n${quoted}`;
-  return `mailto:${encodeURIComponent(m.email || "")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return { to: m.email || "", subject, body };
+}
+export function gmailLink(m) {
+  const { to, subject, body } = replyParts(m);
+  const q = new URLSearchParams({ view: "cm", fs: "1", to, su: subject, body });
+  return `https://mail.google.com/mail/?${q}`;
+}
+export function replyLink(m) {
+  const { to, subject, body } = replyParts(m);
+  return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 export default function CollectionForm() {
@@ -356,19 +368,36 @@ export default function CollectionForm() {
             )}
           </div>
           <p className="whitespace-pre-line text-ink-mid text-[15px] leading-relaxed border-l-2 border-gold/30 pl-3">{data.message}</p>
-          <a
-            href={replyLink(data)}
-            onClick={() => {
-              const at = new Date().toISOString();
-              set("repliedAt", at);
-              updateItem("messages", id, { repliedAt: at }).catch(() => {});
-            }}
-            className="inline-flex items-center gap-2 bg-maroon text-white px-4 py-2 rounded-sm text-[11px] font-semibold tracking-widest uppercase hover:bg-maroon-mid transition-colors"
-          >
-            <span className="material-symbols-outlined text-[18px]">reply</span>
-            Reply by email
-          </a>
-          <p className="text-[12px] text-ink-light">Opens your email app with the reply ready; the message is then marked as replied.</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={gmailLink(data)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-maroon text-white px-4 py-2 rounded-sm text-[11px] font-semibold tracking-widest uppercase hover:bg-maroon-mid transition-colors"
+            >
+              <span className="material-symbols-outlined text-[18px]">reply</span>
+              Reply in Gmail
+            </a>
+            <a href={replyLink(data)} className="text-[12px] text-ink-mid underline hover:text-maroon">
+              or use my email app
+            </a>
+            <span className="flex-1" />
+            <button
+              type="button"
+              onClick={() => {
+                const at = data.repliedAt ? null : new Date().toISOString();
+                set("repliedAt", at);
+                updateItem("messages", id, { repliedAt: at }).catch(() => {});
+              }}
+              className="px-3 py-1.5 border border-cream-dark rounded-sm text-[12px] hover:border-maroon hover:text-maroon"
+            >
+              {data.repliedAt ? "Mark as not replied" : "Mark as replied"}
+            </button>
+          </div>
+          <p className="text-[12px] text-ink-light">
+            Gmail opens in a new tab with the reply ready. If it opens your personal account, switch the “From” address or
+            account to contact@dundulraptenling.org. After sending, click “Mark as replied”.
+          </p>
         </div>
       )}
 
