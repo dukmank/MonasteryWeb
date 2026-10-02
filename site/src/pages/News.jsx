@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { listPublished } from "../lib/content.js";
 import { useNewsletter } from "../lib/useNewsletter.js";
 import { useLang, localized } from "../lib/i18n.jsx";
-import { cld } from "../lib/cloudinary.js";
+import { cld, newsCover } from "../lib/cloudinary.js";
 import PageBanner from "../components/PageBanner.jsx";
 
 // Order matches the admin category options so filter tabs stay in sync.
@@ -35,7 +35,7 @@ export default function News() {
     title: localized(d, "title", lang),
     excerpt: localized(d, "excerpt", lang) || localized(d, "body", lang),
     body: localized(d, "body", lang),
-    img: cld(d.coverImage || ""),
+    img: newsCover(d),
     alt: localized(d, "title", lang),
     images: Array.isArray(d.images) ? d.images.filter(Boolean).map(cld) : [],
   });

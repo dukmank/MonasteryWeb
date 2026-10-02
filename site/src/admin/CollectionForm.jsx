@@ -185,9 +185,12 @@ function FileField({ field, value, onChange }) {
 // Collapsible per-field box for the non-English versions. Empty boxes are
 // filled by machine translation on save and marked "auto" (doc.i18nAuto keeps the
 // English each auto translation was made from); typing in a box makes it manual.
+// Trimmed text of a field value; anything that is not a string counts as empty.
+const text = (v) => (typeof v === "string" ? v.trim() : "");
+
 function OtherLanguages({ field, data, set, setAuto }) {
   const auto = data.i18nAuto || {};
-  const filled = CMS_LANGS.filter((l) => (data[`${field.name}_${l.code}`] || "").trim()).length;
+  const filled = CMS_LANGS.filter((l) => text(data[`${field.name}_${l.code}`])).length;
   const multiline = field.type === "textarea";
   return (
     <details className="group border border-gold/25 rounded-sm bg-cream/30">
@@ -198,7 +201,7 @@ function OtherLanguages({ field, data, set, setAuto }) {
       <div className="px-3 pb-3 space-y-3">
         {CMS_LANGS.map((l) => {
           const key = `${field.name}_${l.code}`;
-          const isAuto = key in auto && (data[key] || "").trim();
+          const isAuto = key in auto && text(data[key]);
           const props = {
             value: data[key] || "",
             lang: l.code,
@@ -271,11 +274,12 @@ export default function CollectionForm() {
       const fields = {};
       const jobs = {};
       for (const f of coll.fields) {
-        const en = (data[f.name] || "").trim();
-        if (!f.bilingual || !en) continue;
+        if (!f.bilingual) continue; // only text fields are translated (not images, tick boxes…)
+        const en = text(data[f.name]);
+        if (!en) continue;
         for (const l of CMS_LANGS) {
           const key = `${f.name}_${l.code}`;
-          const empty = !(data[key] || "").trim();
+          const empty = !text(data[key]);
           const stale = key in auto && auto[key] !== en;
           if (empty || stale) {
             fields[f.name] = data[f.name];
@@ -292,7 +296,7 @@ export default function CollectionForm() {
             for (const [name, text] of Object.entries(vals || {})) {
               if (!text) continue;
               out[`${name}_${code}`] = text;
-              auto[`${name}_${code}`] = (data[name] || "").trim();
+              auto[`${name}_${code}`] = text(data[name]);
             }
           }
         } catch (err) {

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getOne } from "../lib/content.js";
 import { useLang, localized } from "../lib/i18n.jsx";
-import { cld } from "../lib/cloudinary.js";
+import { cld, newsCover } from "../lib/cloudinary.js";
 import PageBanner from "../components/PageBanner.jsx";
 
 export default function NewsDetail() {
@@ -42,7 +42,7 @@ export default function NewsDetail() {
       <style>{`.page-news-detail h1,.page-news-detail h2,.page-news-detail h3{font-family:'Noto Serif',serif;}`}</style>
 
       <PageBanner
-        image={cld(doc.coverImage || "")}
+        image={newsCover(doc, { fallback: false })}
         eyebrow={doc.category || "News"}
         title={title}
         trail={[{ label: "Home", to: "/" }, { label: "News", to: "/news" }, { label: title }]}

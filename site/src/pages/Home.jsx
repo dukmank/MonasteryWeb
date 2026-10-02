@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { listPublished } from "../lib/content.js";
-import { cld } from "../lib/cloudinary.js";
+import { cld, newsCover } from "../lib/cloudinary.js";
 import { useLang, localized } from "../lib/i18n.jsx";
 
 const IMG = {
@@ -54,7 +54,7 @@ export default function Home() {
       if (!alive || !docs) return;
       setNewsItems(
         docs.filter((d) => !d.consecrationOnly).slice(0, 3).map((d) => [
-          cld(d.coverImage || ""),
+          newsCover(d),
           [d.category, localized(d, "date", lang)].filter(Boolean).join(" · "),
           localized(d, "title", lang),
           localized(d, "excerpt", lang) || localized(d, "body", lang),
