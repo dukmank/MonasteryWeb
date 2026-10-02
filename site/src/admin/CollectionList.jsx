@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { COLLECTIONS } from "./collections.js";
 import { listAll, removeItem, updateItem } from "../lib/content.js";
 import { addToMailerLite } from "../lib/mailerlite.js";
-import { replyLink } from "./CollectionForm.jsx";
+import { gmailLink } from "./CollectionForm.jsx";
 
 const when = (ts) => {
   const d = ts?.toDate ? ts.toDate() : ts ? new Date(ts) : null;
@@ -175,14 +175,11 @@ export default function CollectionList() {
                   )}
                   {collKey === "messages" && it.email && (
                     <a
-                      href={replyLink(it)}
-                      onClick={() => {
-                        const at = new Date().toISOString();
-                        updateItem("messages", it.id, { repliedAt: at }).catch(() => {});
-                        setItems((prev) => prev.map((x) => (x.id === it.id ? { ...x, repliedAt: at } : x)));
-                      }}
+                      href={gmailLink(it)}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="p-2 text-ink-light hover:text-maroon transition-colors"
-                      title="Reply by email"
+                      title="Reply in Gmail"
                     >
                       <span className="material-symbols-outlined text-[20px]">reply</span>
                     </a>
