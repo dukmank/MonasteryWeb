@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { COLLECTIONS } from "./collections.js";
 import { listAll, removeItem, updateItem } from "../lib/content.js";
 import { addToMailerLite } from "../lib/mailerlite.js";
-import { gmailLink } from "./CollectionForm.jsx";
 
 const when = (ts) => {
   const d = ts?.toDate ? ts.toDate() : ts ? new Date(ts) : null;
@@ -174,15 +173,13 @@ export default function CollectionList() {
                     <span className="text-[10px] uppercase tracking-widest bg-gold/15 text-gold-dark px-2 py-1 rounded">In MailerLite</span>
                   )}
                   {collKey === "messages" && it.email && (
-                    <a
-                      href={gmailLink(it)}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Link
+                      to={`/admin/messages/${it.id}`}
                       className="p-2 text-ink-light hover:text-maroon transition-colors"
-                      title="Reply in Gmail"
+                      title="Open conversation and reply"
                     >
                       <span className="material-symbols-outlined text-[20px]">reply</span>
-                    </a>
+                    </Link>
                   )}
                   {it.published === false && (
                     <span className="text-[10px] uppercase tracking-widest bg-cream-dark text-ink-light px-2 py-1 rounded">Hidden</span>

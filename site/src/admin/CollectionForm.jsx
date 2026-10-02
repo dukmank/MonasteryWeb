@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { COLLECTIONS, CMS_LANGS, emptyDoc } from "./collections.js";
 import { translateFields } from "../lib/translate.js";
+import MessageThread from "./MessageThread.jsx";
 import { getOne, createItem, updateItem } from "../lib/content.js";
 import { uploadImage, uploadFile, cloudinaryEnabled } from "../lib/cloudinary.js";
 
@@ -223,26 +224,6 @@ function OtherLanguages({ field, data, set, setAuto }) {
   );
 }
 
-// Reply prefilled for the sender. The monastery mail is Google Workspace, so the
-// main button opens a Gmail compose window; mailto: is kept for a desktop email app.
-function replyParts(m) {
-  const subject = m.subject ? `Re: ${m.subject.replace(/^Re:\s*/i, "")}` : "Re: your message to Dundul Raptenling Monastery";
-  let original = String(m.message || "");
-  if (original.length > 1500) original = original.slice(0, 1500) + "…"; // keep the URL a safe length
-  const quoted = original.split("\n").map((l) => `> ${l}`).join("\n");
-  const body = `Dear ${m.name || "friend"},\n\n\n\n— Dundul Raptenling Monastery\ncontact@dundulraptenling.org\n\n${quoted}`;
-  return { to: m.email || "", subject, body };
-}
-export function gmailLink(m) {
-  const { to, subject, body } = replyParts(m);
-  const q = new URLSearchParams({ view: "cm", fs: "1", to, su: subject, body });
-  return `https://mail.google.com/mail/?${q}`;
-}
-export function replyLink(m) {
-  const { to, subject, body } = replyParts(m);
-  return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
-
 export default function CollectionForm() {
   const { coll: collKey, id } = useParams();
   const coll = COLLECTIONS[collKey];
@@ -354,54 +335,9 @@ export default function CollectionForm() {
         </h1>
       </header>
 
-      {coll.key === "messages" && !isNew && (
-        <div className="m-8 mb-0 max-w-2xl bg-white border border-gold/20 rounded-lg p-5 space-y-3">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <div className="font-medium text-ink">{data.name || "(no name)"} <span className="text-ink-light font-normal">&lt;{data.email}&gt;</span></div>
-              <div className="text-sm text-ink-mid">{data.subject || "(no subject)"}</div>
-            </div>
-            {data.repliedAt && (
-              <span className="shrink-0 text-[10px] uppercase tracking-widest bg-green-100 text-green-800 px-2 py-1 rounded">
-                Replied {new Date(data.repliedAt).toLocaleDateString()}
-              </span>
-            )}
-          </div>
-          <p className="whitespace-pre-line text-ink-mid text-[15px] leading-relaxed border-l-2 border-gold/30 pl-3">{data.message}</p>
-          <div className="flex flex-wrap items-center gap-3">
-            <a
-              href={gmailLink(data)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-maroon text-white px-4 py-2 rounded-sm text-[11px] font-semibold tracking-widest uppercase hover:bg-maroon-mid transition-colors"
-            >
-              <span className="material-symbols-outlined text-[18px]">reply</span>
-              Reply in Gmail
-            </a>
-            <a href={replyLink(data)} className="text-[12px] text-ink-mid underline hover:text-maroon">
-              or use my email app
-            </a>
-            <span className="flex-1" />
-            <button
-              type="button"
-              onClick={() => {
-                const at = data.repliedAt ? null : new Date().toISOString();
-                set("repliedAt", at);
-                updateItem("messages", id, { repliedAt: at }).catch(() => {});
-              }}
-              className="px-3 py-1.5 border border-cream-dark rounded-sm text-[12px] hover:border-maroon hover:text-maroon"
-            >
-              {data.repliedAt ? "Mark as not replied" : "Mark as replied"}
-            </button>
-          </div>
-          <p className="text-[12px] text-ink-light">
-            Gmail opens in a new tab with the reply ready. If it opens your personal account, switch the “From” address or
-            account to contact@dundulraptenling.org. After sending, click “Mark as replied”.
-          </p>
-        </div>
-      )}
+      {coll.key === "messages" && !isNew && <MessageThread id={id} data={data} set={set} />}
 
-      <form onSubmit={submit} className="p-8 max-w-2xl space-y-6">
+      {coll.key !== "messages" && <form onSubmit={submit} className="p-8 max-w-2xl space-y-6">
         {coll.fields.map((f) => {
           if (f.type === "image") {
             return <ImageField key={f.name} field={f} value={data[f.name]} onChange={(v) => set(f.name, v)} />;
@@ -495,7 +431,7 @@ export default function CollectionForm() {
             Cancel
           </button>
         </div>
-      </form>
+      </form>}
     </div>
   );
 }
