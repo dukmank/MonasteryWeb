@@ -1,43 +1,19 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { listPublished } from "../lib/content.js";
 import { useNewsletter } from "../lib/useNewsletter.js";
 import { useLang, localized } from "../lib/i18n.jsx";
 import { cld } from "../lib/cloudinary.js";
 import PageBanner from "../components/PageBanner.jsx";
 
-const articles = [
-  {
-    category: "Ritual",
-    date: "October 24, 2024",
-    title: "Sacred Sand Mandala Creation for the Harvest Moon",
-    excerpt: "Monks from the Gaden Shartse Monastery will spend seven days meticulously crafting a Medicine Buddha mandala from colored sand, culminating in a dissolution ceremony.",
-    img: "https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520051/monastery/sbkwgxc3j0tltg3aisj5.jpg",
-    alt: "A close-up high-resolution editorial photograph of a Buddhist ritual with vibrant silk banners and traditional butter lamps flickering in a dimly lit temple. Warm golden light catches the smoke from incense swirling in the air. The mood is reverent and ancient, emphasizing the rich textures and deep maroon robes of the monks in the soft-focus background.",
-  },
-  {
-    category: "Institutional",
-    date: "October 18, 2024",
-    title: "Expansion of the Digital Archive Project",
-    excerpt: "A new partnership with the National Library has allowed for the high-definition scanning of over 500 rare woodblock prints dating back to the 14th century.",
-    img: "https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520052/monastery/a26hiccfvjrw3acuqljr.jpg",
-    alt: "An expansive aerial view of a grand monastic library filled with thousands of hand-wrapped scripture boxes in a traditional Tibetan architectural setting. Golden light filters through high windows, illuminating dust motes and creating long dramatic shadows across the polished wooden floors. The style is scholarly, prestigious, and deeply historical, using a color palette of warm browns, maroons, and golds.",
-  },
-  {
-    category: "Community",
-    date: "October 12, 2024",
-    title: "Annual Dharma Gathering in Kathmandu",
-    excerpt: "Thousands gathered for the 15th annual wisdom festival, featuring public teachings on compassion and the official opening of the new community clinic.",
-    img: "https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520052/monastery/ekd83dd8hz7pgzmlwgny.jpg",
-    alt: "A portrait-style editorial photo of a smiling elderly Tibetan master sharing tea with a diverse group of young students in a sunlit mountain garden. The background features colorful prayer flags fluttering against a clear blue sky. The lighting is bright and optimistic, reflecting a mood of connection and community wisdom. The visual style is modern, minimalist, and deeply human.",
-  },
-];
-
 // Order matches the admin category options so filter tabs stay in sync.
-const CATEGORY_ORDER = ["Announcement", "Event", "Publication", "Ritual", "Community", "Institutional"];
+const CATEGORY_ORDER = ["Announcement", "Event", "Publication", "Ritual", "Community", "Institutional", "Zangdok Palri"];
+
+// "Zangdok Palri" -> "zangdok-palri", used in /news?category=<slug>
+const slug = (c) => c.toLowerCase().replace(/\s+/g, "-");
 
 export default function News() {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [searchParams, setSearchParams] = useSearchParams();
   const [docs, setDocs] = useState(null);
   const [page, setPage] = useState(1);
   const { email, setEmail, status, subscribe } = useNewsletter();
@@ -46,7 +22,7 @@ export default function News() {
   useEffect(() => {
     let alive = true;
     listPublished("news").then((d) => {
-      if (alive && d) setDocs(d);
+      if (alive) setDocs(d || []);
     });
     return () => { alive = false; };
   }, []);
@@ -65,7 +41,7 @@ export default function News() {
 
   const items = docs ? docs.map(mapDoc) : null;
 
-  const data = items ?? articles;
+  const data = items ?? [];
 
   // Filter tabs derived from the categories actually present — always in sync.
   const present = [...new Set(data.map((a) => a.category))];
@@ -74,6 +50,9 @@ export default function News() {
     ...CATEGORY_ORDER.filter((c) => present.includes(c)),
     ...present.filter((c) => !CATEGORY_ORDER.includes(c)),
   ];
+  const activeFilter = filters.find((f) => slug(f) === searchParams.get("category")) || "All";
+  const setActiveFilter = (f) =>
+    setSearchParams(f === "All" ? {} : { category: slug(f) }, { replace: true });
 
   const PAGE_SIZE = 6;
   const filtered = data.filter((a) => activeFilter === "All" || a.category === activeFilter);
@@ -127,6 +106,8 @@ export default function News() {
       {/* News Grid (Block C) */}
       <main className="py-4xl bg-white">
         <div className="max-w-max-width mx-auto px-base md:px-3xl">
+          {items === null && <p className="text-center text-ink-light">Loading…</p>}
+          {items !== null && filtered.length === 0 && <p className="text-center text-ink-light">No news yet.</p>}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-xl">
             {pageItems.map((a) => (
               <article key={a.title} className="group bg-white border border-gold/20 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col">

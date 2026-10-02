@@ -18,7 +18,7 @@ export const COLLECTIONS = {
         name: "category",
         label: "Category",
         type: "select",
-        options: ["Announcement", "Event", "Publication", "Ritual", "Community", "Institutional"],
+        options: ["Announcement", "Event", "Publication", "Ritual", "Community", "Institutional", "Zangdok Palri"],
         default: "Announcement",
       },
       { name: "date", label: "Date (e.g. March 2025)", type: "text", required: true, bilingual: true },
@@ -27,6 +27,7 @@ export const COLLECTIONS = {
       { name: "coverImage", label: "Cover image", type: "image" },
       { name: "images", label: "Additional images (multiple allowed)", type: "images" },
       { name: "published", label: "Publicly visible", type: "bool", default: true },
+      { name: "consecration2028", label: "Show on Consecration 2028 page", type: "bool", default: false },
     ],
   },
 
