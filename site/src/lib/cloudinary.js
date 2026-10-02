@@ -142,3 +142,12 @@ export async function uploadFile(file, { onProgress } = {}) {
     xhr.send(form);
   });
 }
+
+// News cover: the post's cover image, else its first extra photo, else the
+// monastery front view (the cover image is optional in the CMS).
+const NEWS_FALLBACK =
+  "https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1786318624/monastery/swpytecsk7ftgfwrz3j4.jpg";
+export function newsCover(d, { fallback = true } = {}) {
+  const first = Array.isArray(d?.images) ? d.images.find((x) => typeof x === "string" && x) : "";
+  return cld(d?.coverImage || first || (fallback ? NEWS_FALLBACK : ""));
+}
