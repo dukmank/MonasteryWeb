@@ -138,7 +138,9 @@ export default function Stupa() {
           </div>
           <h2 className="text-[28px] md:text-[32px] text-maroon mb-lg">Annual Ceremonies</h2>
           <div className="text-ink-mid text-[15px] md:text-[16px] leading-[1.8] mb-xl space-y-base">
-            <p>Each year, Dundul Raptenling Monastery conducts the <strong>Drolö Tsogkhor</strong> at the Dundul Chorten on the 4th day of the 6th Tibetan month, coinciding with <strong>Chökhor Düchen</strong>, the anniversary commemorating Shakyamuni Buddha's first turning of the Wheel of Dharma.</p>
+            <p>
+              Each year, Dundul Raptenling Monastery conducts the Drolö Tsogkhor at the Dundul Chorten on the 4th day of the 6th Tibetan month, coinciding with Chökhor Düchen, the anniversary commemorating Shakyamuni Buddha's first turning of the Wheel of Dharma.
+            </p>
             <p>On the fifteenth day of the month of Vaisakha (Saka Dawa), devotees gather to make offerings of food and beverages to all participants and visitors.</p>
           </div>
           <div className="h-[1px] w-24 bg-gold/30 mx-auto mb-lg relative">

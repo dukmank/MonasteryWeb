@@ -85,11 +85,17 @@ export default function MasterDetail() {
 
           <div className="space-y-lg">
             <div className="space-y-md">
-              {master.bio.map((para, i) => (
-                <p key={i} className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
-                  {para}
-                </p>
-              ))}
+              {master.bio.map((para, i) =>
+                typeof para === "string" ? (
+                  <p key={i} className="font-body-lg text-body-lg text-ink-mid leading-relaxed">
+                    {para}
+                  </p>
+                ) : (
+                  <h2 key={i} className="font-section-heading text-subheading text-maroon pt-lg">
+                    {para.h}
+                  </h2>
+                )
+              )}
             </div>
             <Link
               className="inline-flex items-center gap-sm text-maroon font-button-text hover:text-gold transition-colors uppercase"

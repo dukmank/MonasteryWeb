@@ -23,7 +23,9 @@ export default function About() {
             <span className="text-[11px] font-medium tracking-[0.2em] text-gold-dark uppercase mb-4 block font-label">OUR ORIGINS</span>
             <h2 className="font-headline text-section-heading text-on-surface mb-xl leading-tight">The History of Dundul Raptenling Monastery</h2>
             <div className="space-y-base text-on-surface-variant leading-relaxed text-body-lg font-body">
-              <p>Our mission is to preserve and uphold the authentic teachings of the Dudjom Tersar lineage, as established by <strong>Dudjom Jigdral Yeshe Dorje</strong>, and to ensure their continuity for future generations. Rooted in the legacy of Dundul Raptenling Monastery, we are dedicated to supporting the education and well-being of monks, maintaining traditional practices, and protecting the sacred Dharma from decline.</p>
+              <p>
+                Our mission is to preserve and uphold the authentic teachings of the Dudjom Tersar lineage, as established by Dudjom Jigdral Yeshe Dorje, and to ensure their continuity for future generations. Rooted in the legacy of Dundul Raptenling Monastery, we are dedicated to supporting the education and well-being of monks, maintaining traditional practices, and protecting the sacred Dharma from decline.
+              </p>
               <p>Through study, practice, and community, we strive to keep this living lineage vibrant—benefiting all beings and sustaining the wisdom of the Buddha in the modern world.</p>
               <Link to="/history" className="mt-lg border border-gold/40 text-on-surface px-lg py-sm rounded-lg text-[13px] font-medium hover:border-gold hover:bg-gold-light transition-all font-label uppercase tracking-wider inline-block">
                 Read full history
