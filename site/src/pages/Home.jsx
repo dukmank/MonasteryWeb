@@ -53,7 +53,7 @@ export default function Home() {
     listPublished("news").then((docs) => {
       if (!alive || !docs) return;
       setNewsItems(
-        docs.slice(0, 3).map((d) => [
+        docs.filter((d) => !d.consecrationOnly).slice(0, 3).map((d) => [
           cld(d.coverImage || ""),
           [d.category, localized(d, "date", lang)].filter(Boolean).join(" · "),
           localized(d, "title", lang),

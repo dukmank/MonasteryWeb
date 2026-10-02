@@ -28,6 +28,7 @@ export const COLLECTIONS = {
       { name: "images", label: "Additional images (multiple allowed)", type: "images" },
       { name: "published", label: "Publicly visible", type: "bool", default: true },
       { name: "consecration2028", label: "Show on Consecration 2028 page", type: "bool", default: false },
+      { name: "consecrationOnly", label: "Consecration page only (hide from this website's news lists)", type: "bool", default: false },
     ],
   },
 
