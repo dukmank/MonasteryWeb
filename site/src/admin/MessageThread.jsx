@@ -97,14 +97,16 @@ export default function MessageThread({ id, data, set }) {
     ? fromMail
     : saved.map((r) => ({ id: r.at, date: r.at, direction: "out", from: "Dundul Raptenling Monastery", subject: r.subject, text: r.text }));
 
-  // The message being answered: their latest e-mail, else the website form message.
-  // It is quoted under the reply ("On …, … wrote:") so they know what it answers.
-  const lastIn = [...fromMail].reverse().find((m) => m.direction === "in");
-  const quote = lastIn
-    ? { from: lastIn.from, when: fmt(lastIn.date), text: lastIn.text }
-    : data.message
-      ? { from: data.name ? `${data.name} <${data.email}>` : data.email, when: fmt(data.createdAt), text: data.message }
-      : null;
+  // The whole conversation, newest first, goes under the reply (like help-desk
+  // e-mails), so the person sees what is being answered and the history.
+  const sender = data.name ? `${data.name} <${data.email}>` : data.email;
+  const history = [
+    ...(data.message ? [{ from: `${sender} · website form`, when: fmt(data.createdAt), text: data.message, at: String(data.createdAt?.toDate?.().toISOString?.() || data.createdAt || "") }] : []),
+    ...shown.map((m) => ({ from: m.direction === "out" ? "Dundul Raptenling Monastery" : m.from, when: fmt(m.date), text: m.text || "", at: m.date })),
+  ]
+    .filter((h) => h.text.trim())
+    .sort((a, b) => String(b.at).localeCompare(String(a.at)))
+    .map(({ at, ...h }) => h);
   const threadId = [...fromMail].reverse().find((m) => m.threadId)?.threadId || savedThreadIds[savedThreadIds.length - 1] || "";
 
   const send = async () => {
@@ -116,7 +118,7 @@ export default function MessageThread({ id, data, set }) {
     setSentNotice("");
     try {
       const refs = fromMail.map((m) => m.id).filter((x) => /^<.+>$/.test(x));
-      const r = await sendReply(id, { subject, text: plain, html, references: refs, quote, threadId });
+      const r = await sendReply(id, { subject, text: plain, html, references: refs, history, threadId });
       const replies = [...saved, { at: r.sentAt, subject, text: plain, html, messageId: r.messageId || "", threadId: r.threadId || "" }];
       set("replies", replies);
       set("repliedAt", r.sentAt);
@@ -193,12 +195,19 @@ export default function MessageThread({ id, data, set }) {
           className="w-full border border-cream-dark rounded-sm px-3 py-2 text-[14px] focus:outline-none focus:border-maroon"
         />
         <RichTextEditor value={text} minRows={8} onChange={(v) => { setText(v); setSentNotice(""); }} />
-        {quote && (
+        {history.length > 0 && (
           <details className="text-[12px] text-ink-light">
-            <summary className="cursor-pointer select-none">Their message is quoted under your reply</summary>
-            <div className="mt-1.5 pl-3 border-l-2 border-cream-dark">
-              <div className="mb-1">On {quote.when}, {quote.from} wrote:</div>
-              <div className="whitespace-pre-line text-ink-mid">{quote.text.length > 600 ? quote.text.slice(0, 600) + "…" : quote.text}</div>
+            <summary className="cursor-pointer select-none">
+              The conversation so far ({history.length} {history.length === 1 ? "message" : "messages"}) is included under your reply
+            </summary>
+            <div className="mt-1.5 border-t border-dotted border-cream-dark">
+              {history.map((h, i) => (
+                <div key={i} className="py-2 border-b border-dotted border-cream-dark">
+                  <div className="font-medium text-ink-mid">{h.from}</div>
+                  <div className="text-[11px]">{h.when}</div>
+                  <div className="whitespace-pre-line text-ink-mid mt-1">{h.text.length > 400 ? h.text.slice(0, 400) + "…" : h.text}</div>
+                </div>
+              ))}
             </div>
           </details>
         )}
