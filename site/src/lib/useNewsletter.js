@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createItem } from "./content.js";
 import { addToMailerLite } from "./mailerlite.js";
+import { trackEvent } from "./analytics.js";
 
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
 
@@ -44,6 +45,7 @@ export function useNewsletter() {
       console.warn("web3forms:", err?.message);
     }
 
+    trackEvent("sign_up", { method: "newsletter" });
     setStatus("sent");
     setEmail("");
     setTimeout(() => setStatus("idle"), 4000);

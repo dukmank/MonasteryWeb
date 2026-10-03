@@ -20,6 +20,10 @@ export default function Privacy() {
             <p>We use your information to respond to your inquiries, process puja requests and donations, send you updates you have requested, and improve our services. We do not sell or share your personal information with third parties for marketing purposes.</p>
           </section>
           <section>
+            <h2 className="font-subheading text-subheading text-maroon mb-3">Website Analytics</h2>
+            <p>We use Google Analytics to understand how visitors use this website, such as which pages are viewed and how visitors find us. It uses cookies and collects information such as the pages you visit, your approximate location, and your device type. Google’s advertising features are turned off, and we do not use this information to identify you. You can opt out with Google’s Analytics opt-out browser add-on.</p>
+          </section>
+          <section>
             <h2 className="font-subheading text-subheading text-maroon mb-3">Data Security</h2>
             <p>We take reasonable measures to protect your personal information. Donation and form data are processed through secure, trusted services.</p>
           </section>

@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
+import { NoIndex } from "../components/Seo.jsx";
 
 export default function NotFound() {
   return (
     <div className="bg-cream min-h-[70vh] flex items-center justify-center px-6 py-4xl">
       <div className="max-w-lg text-center">
+        <NoIndex />
         <span className="font-label-eyebrow text-label-eyebrow uppercase tracking-[0.2em] text-gold block mb-base">Page Not Found</span>
         <h1 className="font-hero-title text-hero-title-mobile md:text-hero-title text-maroon mb-md">404</h1>
         <p className="font-body-md text-ink-mid mb-xl">

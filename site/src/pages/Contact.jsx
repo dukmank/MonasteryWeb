@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { trackEvent } from "../lib/analytics.js";
 import { createItem } from "../lib/content.js";
 import { addToMailerLite } from "../lib/mailerlite.js";
 import PageBanner from "../components/PageBanner.jsx";
@@ -46,6 +47,7 @@ export default function Contact() {
       console.warn("web3forms:", err?.message);
     }
 
+    trackEvent("generate_lead", { form_name: "contact", newsletter_opt_in: newsletter });
     setStatus("sent");
     setForm({ name: "", email: "", subject: "", message: "" });
     setNewsletter(false);

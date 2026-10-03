@@ -42,7 +42,7 @@ export default function OdishaVihara() {
             </div>
             <div className="relative group">
               <div className="rounded-xl overflow-hidden shadow-2xl border border-surface-variant">
-                <img loading="lazy" decoding="async" className="w-full aspect-[4/3] object-cover" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520038/monastery/ohoy0c2f99mgwtvmn6k3.jpg" />
+                <img loading="lazy" decoding="async" className="w-full aspect-[4/3] object-cover" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520038/monastery/ohoy0c2f99mgwtvmn6k3.jpg" alt="Monks of Dundul Raptenling Monastery in daily monastic life, Odisha" />
               </div>
               <div className="absolute -bottom-6 -left-6 bg-cream p-6 rounded-lg border border-gold/20 shadow-xl hidden md:block max-w-xs">
                 <h4 className="font-card-title text-maroon mb-2">A Day in Monastic Life</h4>
@@ -64,7 +64,7 @@ export default function OdishaVihara() {
             {/* Monk 1 */}
             <div className="group">
               <div className="aspect-square overflow-hidden rounded-xl mb-4 border border-gold/10 shadow-sm">
-                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782627749/monastery/wad2lcf0pbkc2dncwjlc.jpg" />
+                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782627749/monastery/wad2lcf0pbkc2dncwjlc.jpg" alt="Sherap Dorjee Kunphel, Acharya graduate 2024" />
               </div>
               <h3 className="font-card-title text-ink-mid text-sm mb-1">Sherap Dorjee Kunphel</h3>
               <span className="text-[10px] text-gold-dark uppercase tracking-widest font-semibold block leading-tight">Acharya Graduate: <br/>Year 2024</span>
@@ -72,7 +72,7 @@ export default function OdishaVihara() {
             {/* Monk 2 */}
             <div className="group">
               <div className="aspect-square overflow-hidden rounded-xl mb-4 border border-gold/10 shadow-sm">
-                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782627750/monastery/kauvnlif1xykwm7kkmsj.jpg" />
+                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782627750/monastery/kauvnlif1xykwm7kkmsj.jpg" alt="Sherap Tenpe Dakpo, Acharya graduate 2024" />
               </div>
               <h3 className="font-card-title text-ink-mid text-sm mb-1">Sherap Tenpe Dakpo</h3>
               <span className="text-[10px] text-gold-dark uppercase tracking-widest font-semibold block leading-tight">Acharya Graduate: <br/>Year 2024</span>
@@ -80,7 +80,7 @@ export default function OdishaVihara() {
             {/* Monk 3 */}
             <div className="group">
               <div className="aspect-square overflow-hidden rounded-xl mb-4 border border-gold/10 shadow-sm">
-                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782627751/monastery/cvn95yjzqb9haql8sdwl.jpg" />
+                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782627751/monastery/cvn95yjzqb9haql8sdwl.jpg" alt="Younten Dorjee, Acharya graduate 2024" />
               </div>
               <h3 className="font-card-title text-ink-mid text-sm mb-1">Younten Dorjee</h3>
               <span className="text-[10px] text-gold-dark uppercase tracking-widest font-semibold block leading-tight">Acharya Graduate: <br/>Year 2024</span>
@@ -88,7 +88,7 @@ export default function OdishaVihara() {
             {/* Monk 4 */}
             <div className="group">
               <div className="aspect-square overflow-hidden rounded-xl mb-4 border border-gold/10 shadow-sm">
-                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782627752/monastery/hm21qhdc8xtouzp5oonh.jpg" />
+                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782627752/monastery/hm21qhdc8xtouzp5oonh.jpg" alt="Jampal Tashi, Acharya graduate 2024" />
               </div>
               <h3 className="font-card-title text-ink-mid text-sm mb-1">Jampal Tashi</h3>
               <span className="text-[10px] text-gold-dark uppercase tracking-widest font-semibold block leading-tight">Acharya Graduate: <br/>Year 2024</span>
@@ -135,7 +135,7 @@ export default function OdishaVihara() {
             </div>
             <div className="lg:col-span-5">
               <div className="rounded-xl overflow-hidden shadow-4xl border border-gold/20 rotate-1">
-                <img loading="lazy" decoding="async" className="w-full aspect-[4/5] object-cover" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782642392/monastery/v9jb9lzsnkshygecmtxt.jpg" />
+                <img loading="lazy" decoding="async" className="w-full aspect-[4/5] object-cover" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782642392/monastery/v9jb9lzsnkshygecmtxt.jpg" alt="Lingdro, the sacred dance of King Gesar, at Dundul Raptenling Monastery" />
               </div>
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function OdishaVihara() {
             {/* Card 1 */}
             <div className="flex flex-col text-left group">
               <div className="h-56 overflow-hidden rounded-xl mb-6 shadow-md">
-                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520043/monastery/osdwgwygykrbdn8mwti2.jpg" />
+                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520043/monastery/osdwgwygykrbdn8mwti2.jpg" alt="The Dundul Chorten stupa in Odisha" />
               </div>
               <span className="text-eyebrow text-[10px] mb-2">Sacred Origin</span>
               <h4 className="font-subheading text-ink-mid mb-3">Construction &amp; Blessings</h4>
@@ -159,7 +159,7 @@ export default function OdishaVihara() {
             {/* Card 2 */}
             <div className="flex flex-col text-left group">
               <div className="h-56 overflow-hidden rounded-xl mb-6 shadow-md">
-                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520044/monastery/ofdww8j3rt0ahjz8uidk.jpg" />
+                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520044/monastery/ofdww8j3rt0ahjz8uidk.jpg" alt="Devotees at the Dundul Chorten stupa" />
               </div>
               <span className="text-eyebrow text-[10px] mb-2">Miraculous Signs</span>
               <h4 className="font-subheading text-ink-mid mb-3">Living Faith</h4>
@@ -168,7 +168,7 @@ export default function OdishaVihara() {
             {/* Card 3 */}
             <div className="flex flex-col text-left group">
               <div className="h-56 overflow-hidden rounded-xl mb-6 shadow-md">
-                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520045/monastery/tafobqeowzzsjqpshvgd.jpg" />
+                <img loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000" src="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520045/monastery/tafobqeowzzsjqpshvgd.jpg" alt="Kora around the Dundul Chorten stupa" />
               </div>
               <span className="text-eyebrow text-[10px] mb-2">Daily Practice</span>
               <h4 className="font-subheading text-ink-mid mb-3">Ritual &amp; Kora</h4>

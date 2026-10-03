@@ -1,5 +1,6 @@
 import { Link, useParams, useLocation } from "react-router-dom";
 import { getMaster } from "../data/masters.js";
+import { NoIndex } from "../components/Seo.jsx";
 
 export default function MasterDetail() {
   const { slug } = useParams();
@@ -9,6 +10,7 @@ export default function MasterDetail() {
   if (!master) {
     return (
       <div className="py-4xl px-base text-center max-w-max-width mx-auto">
+        <NoIndex />
         <h1 className="font-section-heading text-section-heading text-maroon mb-lg">
           Not Found
         </h1>

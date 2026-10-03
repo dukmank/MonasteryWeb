@@ -2,7 +2,13 @@
 // Consumed by <Seo /> (mounted once in Layout) which updates the document
 // head on every route change. Canonical/OG URLs use the primary domain.
 
+import { getMaster } from "../data/masters.js";
+
 export const SITE_URL = "https://dundulraptenling.org";
+
+// Default share image (same as index.html).
+export const DEFAULT_IMAGE =
+  "https://res.cloudinary.com/dvhwombxw/image/upload/v1786318624/monastery/swpytecsk7ftgfwrz3j4.jpg";
 
 export const DEFAULT_SEO = {
   title: "Dundul Raptenling Monastery | Tibetan Buddhist Monastery in Odisha",
@@ -151,7 +157,34 @@ export const PAGE_SEO = {
   },
 };
 
-// Prefix fallbacks for dynamic detail routes (e.g. /vajra-masters/:slug).
+// Biography pages: one unique title/description per person. People listed as
+// both a President and a Vajra Master have two URLs with the same biography —
+// the /presidents/ one is canonical.
+export function trimDescription(text, max = 155) {
+  if (text.length <= max) return text;
+  return text.slice(0, text.lastIndexOf(" ", max - 1)).replace(/[,;:—–-]$/, "") + "…";
+}
+
+function masterSeo(pathname) {
+  const m = pathname.match(/^\/(vajra-masters|presidents)\/([^/]+)$/);
+  const master = m && getMaster(m[2]);
+  if (!master) return null;
+  const firstPara = master.bio.find((b) => typeof b === "string") || "";
+  // "6th Vajra Master · Current" -> "Current 6th Vajra Master"; "A · B" -> "A, B"
+  const role = master.role.endsWith(" · Current")
+    ? "Current " + master.role.replace(" · Current", "")
+    : master.role.replace(" · ", ", ");
+  const canonicalGroup = master.groups.includes("president") ? "presidents" : "vajra-masters";
+  return {
+    title: `${master.name} | Dundul Raptenling Monastery`,
+    description: trimDescription(`${role} of Dundul Raptenling Monastery. ${firstPara}`),
+    image: master.portrait,
+    canonical: `/${canonicalGroup}/${master.slug}`,
+  };
+}
+
+// Prefix fallbacks for dynamic detail routes (e.g. /news/:id before the
+// article has loaded — NewsDetail then sets the article's own title).
 const PREFIX_SEO = [
   ["/vajra-masters/", PAGE_SEO["/vajra-masters"]],
   ["/presidents/", PAGE_SEO["/presidents"]],
@@ -160,6 +193,8 @@ const PREFIX_SEO = [
 
 export function getSeo(pathname) {
   if (PAGE_SEO[pathname]) return PAGE_SEO[pathname];
+  const person = masterSeo(pathname);
+  if (person) return person;
   for (const [prefix, val] of PREFIX_SEO) {
     if (pathname.startsWith(prefix)) return val;
   }
