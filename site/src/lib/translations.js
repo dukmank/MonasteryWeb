@@ -9,6 +9,8 @@
 const pageModules = import.meta.glob("./translations/*.js", { eager: true });
 // Pema's reviewed Tibetan (2026-10) wins over BASE and every page file.
 import REVIEWED from "./translations/reviewed-pema-2026-10.js";
+// The translator's verified Tibetan (2026-10-03) wins over everything, including REVIEWED.
+import TRANSLATOR from "./translations/translator-2026-10.js";
 const PAGE_TIB = Object.assign(
   {},
   ...Object.values(pageModules).map((m) => m.default || {})
@@ -92,4 +94,4 @@ const BASE = {
     "ཁྱེད་ཀྱིས་འཚོལ་བཞིན་པའི་ཤོག་ངོས་དེ་མི་གནས་པའམ་སྤོ་ཟིན་པ་ཡིན་སྲིད། ཁྱེད་ཀྱི་ལམ་གྱིས་བཀའ་ཆོས་ལ་སླར་ཁྲིད་པར་ཤོག",
 };
 
-export const TIB = Object.assign({}, PAGE_TIB, BASE, REVIEWED);
+export const TIB = Object.assign({}, PAGE_TIB, BASE, REVIEWED, TRANSLATOR);
