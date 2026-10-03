@@ -6,14 +6,20 @@
 // dist/ with `vite preview`, loads each route in headless Chrome, waits for
 // React + <Seo/> to run, and writes the rendered HTML back into dist/.
 // Degrades gracefully (skips) if Chrome isn't available.
+//
+// Also prerenders every news article linked from /news (content from Firestore)
+// and writes dist/sitemap.xml from the pages that rendered, keeping the
+// priorities from public/sitemap.xml. Pages whose canonical URL points elsewhere
+// (people listed under both /presidents and /vajra-masters) or that are
+// noindex are left out of the sitemap.
 
 import { spawn } from "node:child_process";
-import { mkdir, writeFile, access } from "node:fs/promises";
+import { mkdir, writeFile, readFile, access } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import puppeteer from "puppeteer-core";
 
-import { PAGE_SEO } from "../src/lib/seo.js";
+import { PAGE_SEO, SITE_URL } from "../src/lib/seo.js";
 import { MASTERS } from "../src/data/masters.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -48,6 +54,39 @@ function routes() {
 function outFile(route) {
   if (route === "/") return join(DIST, "index.html");
   return join(DIST, route.replace(/^\//, ""), "index.html");
+}
+
+// Article URLs linked from the rendered /news page.
+async function newsRoutes(browser) {
+  const page = await browser.newPage();
+  try {
+    await page.goto(ORIGIN + "/news", { waitUntil: "networkidle2", timeout: 30000 });
+    await page.waitForSelector('a[href^="/news/"]', { timeout: 15000 });
+    const hrefs = await page.$$eval('a[href^="/news/"]', (as) => as.map((a) => a.getAttribute("href")));
+    return [...new Set(hrefs.filter((h) => /^\/news\/[^/?#]+$/.test(h)))];
+  } catch (e) {
+    console.warn(`[prerender] could not list news articles: ${e.message}`);
+    return [];
+  } finally {
+    await page.close();
+  }
+}
+
+async function writeSitemap(entries) {
+  const priorities = {};
+  try {
+    const src = await readFile(resolve(__dirname, "../public/sitemap.xml"), "utf8");
+    for (const m of src.matchAll(/<loc>([^<]+)<\/loc><priority>([^<]+)<\/priority>/g)) priorities[m[1]] = m[2];
+  } catch { /* no hand-written sitemap: default priorities */ }
+  const urls = entries
+    .map((loc) => `  <url><loc>${loc}</loc><priority>${priorities[loc] || "0.6"}</priority></url>`)
+    .join("\n");
+  await writeFile(
+    join(DIST, "sitemap.xml"),
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+    "utf8"
+  );
+  console.log(`[prerender] sitemap.xml: ${entries.length} URLs`);
 }
 
 function waitForServer(url, tries = 60) {
@@ -86,7 +125,8 @@ async function main() {
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
-    const list = routes();
+    const list = [...routes(), ...(await newsRoutes(browser))];
+    const sitemap = [];
     let ok = 0;
     for (const route of list) {
       const page = await browser.newPage();
@@ -97,7 +137,22 @@ async function main() {
           () => document.querySelector("#root")?.children.length > 0,
           { timeout: 15000 }
         );
+        // Articles load from Firestore after mount.
+        await page.waitForFunction(
+          () => !document.querySelector("main")?.innerText.includes("Loading…"),
+          { timeout: 15000 }
+        );
         await new Promise((r) => setTimeout(r, 400));
+        const { noindex, canonical } = await page.evaluate(() => ({
+          noindex: !!document.querySelector('meta[name="robots"][content*="noindex"]'),
+          canonical: document.querySelector('link[rel="canonical"]')?.getAttribute("href"),
+        }));
+        if (noindex) {
+          console.warn(`[prerender] skipped ${route}: page is noindex (not found?)`);
+          continue;
+        }
+        const loc = SITE_URL + route;
+        if (canonical === loc) sitemap.push(loc);
         const html = await page.content();
         const file = outFile(route);
         await mkdir(dirname(file), { recursive: true });
@@ -111,6 +166,7 @@ async function main() {
       }
     }
     console.log(`[prerender] done: ${ok}/${list.length} routes`);
+    await writeSitemap(sitemap);
   } finally {
     if (browser) await browser.close();
     preview.kill("SIGTERM");

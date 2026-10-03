@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { trackEvent } from "../lib/analytics.js";
 import { Link } from "react-router-dom";
 import PageBanner from "../components/PageBanner.jsx";
 import { PUJA_LIST, PUJA_CATEGORIES } from "../data/pujaList.js";
@@ -61,6 +62,7 @@ export default function PujaList() {
         });
       }
     } catch (err) { console.warn(err?.message); }
+    trackEvent("generate_lead", { form_name: "puja_request", puja: pf.puja, newsletter_opt_in: newsletter });
     setPStatus("sent");
     setPf({ puja: "", name: "", email: "", dedication: "", intention: "" });
     setNewsletter(false);

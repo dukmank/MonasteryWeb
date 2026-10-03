@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { trackEvent } from "../lib/analytics.js";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { NAV } from "../site.js";
 import { useLang, LANGUAGES } from "../lib/i18n.jsx";
@@ -126,6 +127,7 @@ export default function Nav() {
                         lang={l.html}
                         onClick={() => {
                           setLang(l.code);
+                          trackEvent("select_language", { language: l.code });
                           setLangOpen(false);
                         }}
                         className={

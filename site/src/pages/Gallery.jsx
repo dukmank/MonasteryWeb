@@ -106,7 +106,7 @@ export default function Gallery() {
         cat: d.category || "General",
         wrap: "aspect-square",
         label: localized(d, "caption", lang),
-        alt: localized(d, "caption", lang),
+        alt: localized(d, "caption", lang) || `${d.category || "Gallery"} — Dundul Raptenling Monastery`,
         src: cld(d.image || ""),
       }))
     : null;

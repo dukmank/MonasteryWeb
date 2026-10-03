@@ -5,6 +5,9 @@ import { useLang, localized } from "../lib/i18n.jsx";
 import { cld, newsCover } from "../lib/cloudinary.js";
 import PageBanner from "../components/PageBanner.jsx";
 import RichText from "../components/RichText.jsx";
+import { applySeo, NoIndex } from "../components/Seo.jsx";
+import { trimDescription } from "../lib/seo.js";
+import { richTextToPlain } from "../lib/richtext.js";
 
 export default function NewsDetail() {
   const { id } = useParams();
@@ -20,6 +23,19 @@ export default function NewsDetail() {
     return () => { alive = false; };
   }, [id]);
 
+  // Article title/description/image for Google and link previews (English —
+  // the site has one URL per page; other languages are translated in the browser).
+  useEffect(() => {
+    if (!doc) return;
+    const text = richTextToPlain(localized(doc, "excerpt", "en") || localized(doc, "body", "en"));
+    applySeo({
+      title: `${localized(doc, "title", "en")} | Dundul Raptenling Monastery`,
+      description: trimDescription(text.replace(/\s+/g, " ").trim()),
+      path: `/news/${id}`,
+      image: newsCover(doc, { fallback: false }) || undefined,
+    });
+  }, [doc, id]);
+
   if (doc === undefined) {
     return <div className="py-4xl text-center text-ink-light">Loading…</div>;
   }
@@ -27,6 +43,7 @@ export default function NewsDetail() {
   if (!doc) {
     return (
       <div className="py-4xl text-center">
+        <NoIndex />
         <h1 className="font-section-heading text-section-heading text-maroon mb-base">Article not found</h1>
         <Link to="/news" className="text-maroon underline hover:text-gold">Back to News</Link>
       </div>
