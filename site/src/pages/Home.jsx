@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { listPublished } from "../lib/content.js";
 import { cld, newsCover } from "../lib/cloudinary.js";
 import { useLang, localized } from "../lib/i18n.jsx";
+import { richTextToPlain } from "../lib/richtext.js";
 
 const IMG = {
   hero: "https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1786318624/monastery/swpytecsk7ftgfwrz3j4.jpg",
@@ -57,7 +58,7 @@ export default function Home() {
           newsCover(d),
           [d.category, localized(d, "date", lang)].filter(Boolean).join(" · "),
           localized(d, "title", lang),
-          localized(d, "excerpt", lang) || localized(d, "body", lang),
+          localized(d, "excerpt", lang) || richTextToPlain(localized(d, "body", lang)),
           `/news/${d.id}`,
         ])
       );

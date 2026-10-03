@@ -12,13 +12,25 @@ const escapeHtml = (s) =>
 
 const looksLikeHtml = (s) => /<\/?(p|br|strong|b|em|i|u|ul|ol|li|a|div)\b/i.test(s);
 
-// Plain text (old CMS values) -> paragraphs; single line breaks become <br>.
+// Plain text (old CMS values) -> paragraphs; single line breaks become <br>,
+// bare URLs become links (as the news page did before rich text).
+const URL_RE = /(https?:\/\/[^\s<>"']*[^\s<>"'.,;:!?)])/g;
+const linkify = (text) =>
+  text
+    .split(URL_RE)
+    .map((part, i) =>
+      i % 2
+        ? `<a href="${escapeHtml(part)}" target="_blank" rel="noopener noreferrer">${escapeHtml(part)}</a>`
+        : escapeHtml(part),
+    )
+    .join("");
+
 function plainToHtml(s) {
   return s
     .split(/\n{2,}/)
     .map((para) => para.trim())
     .filter(Boolean)
-    .map((para) => `<p>${escapeHtml(para).replace(/\n/g, "<br>")}</p>`)
+    .map((para) => `<p>${linkify(para).replace(/\n/g, "<br>")}</p>`)
     .join("");
 }
 
