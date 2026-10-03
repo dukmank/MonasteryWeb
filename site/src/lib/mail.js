@@ -19,10 +19,13 @@ async function call(payload) {
   return data;
 }
 
-// -> [{ id, date, direction: "in" | "out", from, subject, text }], oldest first
-export const loadThread = (messageId) => call({ action: "thread", messageId }).then((d) => d.messages || []);
+// -> { mailbox, messages: [{ id, threadId, date, direction: "in" | "out", from, subject, spam, text }] }
+// (messages oldest first). threadIds: Gmail conversations from earlier CMS replies.
+export const loadThread = (messageId, threadIds = []) =>
+  call({ action: "thread", messageId, threadIds }).then((d) => ({ mailbox: d.mailbox || "", messages: d.messages || [] }));
 
-// -> { ok, sentAt, messageId }
-// text = plain-text version; html = the rich-text reply (optional)
-export const sendReply = (messageId, subject, text, references, html) =>
-  call({ action: "send", messageId, subject, text, references, ...(html ? { html } : {}) });
+// -> { ok, sentAt, messageId, threadId }
+// text = plain-text version; html = the rich-text reply; quote = { from, when, text }
+// of the message being answered (shown under the reply); threadId = Gmail conversation.
+export const sendReply = (messageId, { subject, text, html, references, quote, threadId }) =>
+  call({ action: "send", messageId, subject, text, references, ...(html ? { html } : {}), ...(quote ? { quote } : {}), ...(threadId ? { threadId } : {}) });

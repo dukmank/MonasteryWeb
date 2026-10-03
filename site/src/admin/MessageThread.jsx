@@ -33,7 +33,7 @@ export function replyLink(m) {
   return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-function Bubble({ out, who, when, subject, children }) {
+function Bubble({ out, who, when, subject, spam, children }) {
   return (
     <div className={`flex ${out ? "justify-end" : "justify-start"}`}>
       <div
@@ -43,6 +43,7 @@ function Bubble({ out, who, when, subject, children }) {
       >
         <div className="text-[11px] text-ink-light mb-1">
           <span className="font-medium text-ink-mid">{who}</span> · {when}
+          {spam && <span className="ml-1.5 bg-error/10 text-error px-1.5 py-0.5 rounded text-[10px] uppercase tracking-widest">In Spam</span>}
           {subject && <span className="block truncate">{subject}</span>}
         </div>
         <div className="whitespace-pre-line text-[14px] leading-relaxed text-ink">{children}</div>
@@ -55,6 +56,7 @@ function Bubble({ out, who, when, subject, children }) {
 // from contact@dundulraptenling.org without leaving the CMS.
 export default function MessageThread({ id, data, set }) {
   const [thread, setThread] = useState(null); // null = loading, [] = none
+  const [mailbox, setMailbox] = useState("");
   const [threadError, setThreadError] = useState("");
   const [subject, setSubject] = useState(replySubject(data));
   const [text, setText] = useState("");
@@ -62,16 +64,21 @@ export default function MessageThread({ id, data, set }) {
   const [sendError, setSendError] = useState("");
   const [sentNotice, setSentNotice] = useState("");
 
+  // Gmail conversations the CMS replied in, so answers from any address show up.
+  const savedThreadIds = (Array.isArray(data.replies) ? data.replies : []).map((r) => r.threadId).filter(Boolean);
   const refresh = () => {
     setThreadError("");
-    loadThread(id)
-      .then(setThread)
+    loadThread(id, savedThreadIds)
+      .then((r) => {
+        setThread(r.messages);
+        setMailbox(r.mailbox);
+      })
       .catch((e) => {
         setThread([]);
         setThreadError(e.message);
       });
   };
-  useEffect(refresh, [id]);
+  useEffect(refresh, [id, savedThreadIds.join(",")]);
   // Prefill once the message has loaded, unless the admin already started typing.
   // The reply box is rich text (HTML); a blank paragraph is left for the message.
   const draft = `<p>Dear ${escapeHtml(data.name || "friend")},</p><p><br></p>${SIGNATURE_HTML}`;
@@ -90,6 +97,16 @@ export default function MessageThread({ id, data, set }) {
     ? fromMail
     : saved.map((r) => ({ id: r.at, date: r.at, direction: "out", from: "Dundul Raptenling Monastery", subject: r.subject, text: r.text }));
 
+  // The message being answered: their latest e-mail, else the website form message.
+  // It is quoted under the reply ("On …, … wrote:") so they know what it answers.
+  const lastIn = [...fromMail].reverse().find((m) => m.direction === "in");
+  const quote = lastIn
+    ? { from: lastIn.from, when: fmt(lastIn.date), text: lastIn.text }
+    : data.message
+      ? { from: data.name ? `${data.name} <${data.email}>` : data.email, when: fmt(data.createdAt), text: data.message }
+      : null;
+  const threadId = [...fromMail].reverse().find((m) => m.threadId)?.threadId || savedThreadIds[savedThreadIds.length - 1] || "";
+
   const send = async () => {
     const html = normalizeRichText(text);
     const plain = richTextToEmailText(html);
@@ -99,8 +116,8 @@ export default function MessageThread({ id, data, set }) {
     setSentNotice("");
     try {
       const refs = fromMail.map((m) => m.id).filter((x) => /^<.+>$/.test(x));
-      const r = await sendReply(id, subject, plain, refs, html);
-      const replies = [...saved, { at: r.sentAt, subject, text: plain, html, messageId: r.messageId || "" }];
+      const r = await sendReply(id, { subject, text: plain, html, references: refs, quote, threadId });
+      const replies = [...saved, { at: r.sentAt, subject, text: plain, html, messageId: r.messageId || "", threadId: r.threadId || "" }];
       set("replies", replies);
       set("repliedAt", r.sentAt);
       await updateItem("messages", id, { replies, repliedAt: r.sentAt });
@@ -149,10 +166,18 @@ export default function MessageThread({ id, data, set }) {
         </Bubble>
         {thread === null && <p className="text-[12px] text-ink-light">Loading e-mail conversation…</p>}
         {shown.map((m) => (
-          <Bubble key={m.id} out={m.direction === "out"} who={m.direction === "out" ? "Monastery" : m.from} when={fmt(m.date)} subject={m.subject}>
+          <Bubble key={m.id} out={m.direction === "out"} who={m.direction === "out" ? "Monastery" : m.from} when={fmt(m.date)} subject={m.subject} spam={m.spam}>
             {m.text}
           </Bubble>
         ))}
+        {mailbox && (
+          <p className="text-[11px] text-ink-light">
+            E-mail conversation read from the <span className="font-medium text-ink-mid">{mailbox}</span> mailbox
+            {mailbox.toLowerCase() !== "contact@dundulraptenling.org" &&
+              " — replies sent to contact@dundulraptenling.org only show here if they reach this mailbox"}
+            .
+          </p>
+        )}
         {threadError && (
           <p className="text-[12px] text-ink-light">
             E-mail history unavailable: {threadError}
@@ -168,6 +193,15 @@ export default function MessageThread({ id, data, set }) {
           className="w-full border border-cream-dark rounded-sm px-3 py-2 text-[14px] focus:outline-none focus:border-maroon"
         />
         <RichTextEditor value={text} minRows={8} onChange={(v) => { setText(v); setSentNotice(""); }} />
+        {quote && (
+          <details className="text-[12px] text-ink-light">
+            <summary className="cursor-pointer select-none">Their message is quoted under your reply</summary>
+            <div className="mt-1.5 pl-3 border-l-2 border-cream-dark">
+              <div className="mb-1">On {quote.when}, {quote.from} wrote:</div>
+              <div className="whitespace-pre-line text-ink-mid">{quote.text.length > 600 ? quote.text.slice(0, 600) + "…" : quote.text}</div>
+            </div>
+          </details>
+        )}
         {sendError && <p className="text-[13px] text-error">{sendError}</p>}
         {sentNotice && (
           <p className="flex items-start gap-1.5 text-[13px] text-green-800 bg-green-50 border border-green-200 rounded-sm px-3 py-2" role="status">
