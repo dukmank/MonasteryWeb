@@ -123,9 +123,9 @@ export const PAGE_SEO = {
   // Live routes not listed in the spreadsheet — sensible defaults so every
   // page has a unique, accurate title/description.
   "/puja": {
-    title: "Sacred Puja Requests | Dundul Raptenling Monastery",
+    title: "Request a Puja Online | Dundul Raptenling Monastery",
     description:
-      "Request a sacred puja from Dundul Raptenling Monastery — dedicated prayers and rituals in the Dudjom Tersar lineage for health, protection, and merit.",
+      "Request a puja online from Dundul Raptenling Monastery in Odisha, India: Dudjom Tersar prayers for health, long life, removing obstacles, and the deceased.",
   },
   "/prayer-books": {
     title: "Puja Prayer Books | Dundul Raptenling Monastery",

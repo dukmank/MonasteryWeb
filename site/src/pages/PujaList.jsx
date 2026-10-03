@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trackEvent } from "../lib/analytics.js";
 import { Link } from "react-router-dom";
 import PageBanner from "../components/PageBanner.jsx";
-import { PUJA_LIST, PUJA_CATEGORIES } from "../data/pujaList.js";
+import { PUJA_LIST, PUJA_CATEGORIES, PUJA_PURPOSES, pujaCategoryId } from "../data/pujaList.js";
 import { createItem } from "../lib/content.js";
 import { addToMailerLite } from "../lib/mailerlite.js";
 import { useLang } from "../lib/i18n.jsx";
@@ -13,6 +13,30 @@ const fmt = (n) => {
   const num = Number(n);
   return Number.isFinite(num) ? num.toLocaleString("en-IN") : n;
 };
+
+const FAQ = [
+  {
+    q: "How do I request a puja online?",
+    a: "Choose a puja from the list below, then fill in the Puja Request Form with your name, email, the name(s) the prayers are for, and your intention. The monastery will reply by email with the next steps.",
+  },
+  {
+    q: "Can I request a puja from outside India?",
+    a: "Yes. You can request a puja from anywhere in the world. The puja is performed by the monks at Dundul Raptenling Monastery in Odisha, India, and dedicated to the names and intention you send.",
+  },
+  {
+    q: "Who can a puja be dedicated to?",
+    a: "You can dedicate a puja to yourself, family members, friends, someone who is ill, or a loved one who has passed away. Enter their name(s) in the Dedication field.",
+  },
+  {
+    q: "What does the puja offering cover?",
+    a: "The listed amounts are suggested offerings in Indian Rupees. They help cover food, ritual materials, and support for the monks who perform the puja.",
+  },
+  {
+    q: "Which puja should I choose?",
+    a: "Choose by purpose: health and healing, long life, removing obstacles, or caring for the deceased. If you are unsure, select Other in the form and describe your situation in the Intention field.",
+  },
+];
+
 
 // showName: false in Tibetan mode, where the English name would be translated
 // into the same Tibetan title already shown above it.
@@ -78,6 +102,19 @@ export default function PujaList() {
     .filter((g) => g.items.length > 0);
   const toggle = (cat) => setExpanded((e) => ({ ...e, [cat]: !e[cat] }));
 
+  // FAQ structured data for Google (in the prerendered head of /puja only).
+  useEffect(() => {
+    const el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+    });
+    document.head.appendChild(el);
+    return () => el.remove();
+  }, []);
+
   return (
     <div className="page-puja">
       <style>{`
@@ -89,13 +126,16 @@ export default function PujaList() {
       <PageBanner
         image="https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782520072/monastery/wocwwpny7tf75yv8zfx9.jpg"
         eyebrow="Ritual Offerings"
-        title="Sacred Puja Requests"
+        title="Request a Puja Online"
         trail={[{ label: "Home", to: "/" }, { label: "Support" }, { label: "Puja Request" }]}
       />
 
       {/* Intro */}
       <section className="py-20 bg-white border-b border-outline-variant">
         <div className="max-w-[800px] mx-auto px-base sm:px-lg text-center">
+          <p className="text-base sm:text-lg text-ink-mid mb-6 leading-relaxed">
+            Request a puja online from Dundul Raptenling Monastery, a Nyingma monastery of the Dudjom Tersar lineage in Odisha, India. Our monks perform each puja at the monastery and dedicate it to the names and intention you send, wherever you live.
+          </p>
           <p className="text-base sm:text-lg text-ink-mid mb-10 leading-relaxed">
             By requesting a Puja, one creates a profound karmic connection with the Sangha and invokes the blessings of the Enlightened Beings for the benefit of all sentient beings. Whether for health, prosperity, or the transition of a loved one, these ancient rituals are performed with meticulous care by our monastic community.
           </p>
@@ -104,6 +144,40 @@ export default function PujaList() {
               Request a Puja
             </a>
             <span className="text-[12px] text-ink-light italic">All offerings directly support the monastery and the resident monks.</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Choose a puja by purpose */}
+      <section className="py-16 sm:py-20 bg-white border-b border-outline-variant">
+        <div className="max-w-max-width mx-auto px-base sm:px-lg">
+          <div className="text-center mb-10">
+            <span className="text-[11px] text-gold-dark tracking-widest uppercase mb-2 block">Pujas by Purpose</span>
+            <h2 className="text-2xl sm:text-3xl text-ink font-normal">Choose a Puja for Your Intention</h2>
+            <div className="h-[1px] w-16 bg-gold mx-auto mt-4"></div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {PUJA_PURPOSES.map((p) => {
+              const items = PUJA_LIST.filter((x) => x.cat === p.cat);
+              const from = Math.min(...items.map((x) => Number(x.amount)).filter(Number.isFinite));
+              return (
+                <div key={p.cat} className="p-6 sm:p-8 rounded-lg border border-outline-variant bg-cream flex flex-col">
+                  <i className={`ti ${p.icon} text-gold text-3xl mb-3`}></i>
+                  <h3 className="text-xl text-maroon mb-3">{p.title}</h3>
+                  <p className="text-[14px] text-ink-mid leading-relaxed mb-5">{p.desc}</p>
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
+                    <span className="text-[12px] text-ink-light uppercase tracking-wider">{items.length} pujas · from ₹{fmt(from)}</span>
+                    <a
+                      href={`#${pujaCategoryId(p.cat)}`}
+                      onClick={() => setExpanded((e) => ({ ...e, [p.cat]: true }))}
+                      className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.15em] text-maroon hover:text-gold-dark"
+                    >
+                      See pujas <i className="ti ti-arrow-down"></i>
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -156,7 +230,7 @@ export default function PujaList() {
                 const isOpen = expanded[cat];
                 const visible = isOpen ? items : items.slice(0, 3);
                 return (
-                  <div key={cat}>
+                  <div key={cat} id={pujaCategoryId(cat)} className="scroll-mt-28">
                     <div className="text-center mb-6">
                       <span className="text-[11px] text-gold-dark tracking-widest uppercase font-medium">{cat}</span>
                       <div className="h-[1px] w-12 bg-gold/40 mx-auto mt-2"></div>
@@ -256,6 +330,27 @@ export default function PujaList() {
                 Contact Us
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ (also published as FAQPage structured data above) */}
+      <section className="py-16 sm:py-20 bg-white border-b border-outline-variant">
+        <div className="max-w-[760px] mx-auto px-base sm:px-lg">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl text-ink font-normal">Puja Requests: Frequently Asked Questions</h2>
+            <div className="h-[1px] w-16 bg-gold mx-auto mt-4"></div>
+          </div>
+          <div className="divide-y divide-outline-variant/60 border-y border-outline-variant/60">
+            {FAQ.map(({ q, a }) => (
+              <details key={q} className="group py-5">
+                <summary className="flex justify-between items-center gap-4 cursor-pointer list-none text-[16px] text-ink">
+                  <h3 className="font-normal">{q}</h3>
+                  <i className="ti ti-plus text-gold group-open:rotate-45 transition-transform"></i>
+                </summary>
+                <p className="mt-3 text-[14px] text-ink-mid leading-relaxed">{a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>

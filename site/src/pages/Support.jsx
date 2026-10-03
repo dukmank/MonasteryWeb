@@ -1,12 +1,7 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import PageBanner from "../components/PageBanner.jsx";
-import { PUJA_LIST } from "../data/pujaList.js";
-import { createItem } from "../lib/content.js";
-import { addToMailerLite } from "../lib/mailerlite.js";
+import { PUJA_LIST, PUJA_PURPOSES, pujaCategoryId } from "../data/pujaList.js";
 import { useLang } from "../lib/i18n.jsx";
-
-const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
 
 // Real monastery photos (folder "7-support and get involved").
 const IMG_BANNER = "https://res.cloudinary.com/dvhwombxw/image/upload/f_auto,q_auto/v1782886008/monastery/ckc89ooiysnngs1kuaiq.jpg";
@@ -17,11 +12,12 @@ const fmt = (n) => {
   return Number.isFinite(x) ? x.toLocaleString("en-IN") : n;
 };
 
+// Prices come from PUJA_LIST (matched by category + si) so they stay in sync with /puja.
 const FEATURED = [
-  { tib: "ཞི་ཁྲོ་གནས་སྟོང་།", name: "100 time of 100 peaceful & Wrathful deties", amount: "35000", desc: "Clearing obstacles and nurturing wisdom." },
-  { tib: "ཕུར་པ་སྟོང་ཟློག་རྒྱས་པ།", name: "1000 times Averting obstacle through kilaya – long version", amount: "40000", desc: "Ritual for healing and physical wellbeing." },
-  { tib: "བསང་གསོལ་ཉིན་ཚོགས།", name: "Smoke and Mahakala puja for whole day", amount: "18000", desc: "Smoke cleansing for environment and protection." },
-];
+  { cat: "Removing Obstacle Rituals", si: "28", tib: "ཞི་ཁྲོ་གནས་སྟོང་།", name: "100 time of 100 peaceful & Wrathful deties", desc: "Clearing obstacles and nurturing wisdom." },
+  { cat: "Removing Obstacle Rituals", si: "2", tib: "ཕུར་པ་སྟོང་ཟློག་རྒྱས་པ།", name: "1000 times Averting obstacle through kilaya – long version", desc: "Ritual for healing and physical wellbeing." },
+  { cat: "Removing Obstacle Rituals", si: "38", tib: "བསང་གསོལ་ཉིན་ཚོགས།", name: "Smoke and Mahakala puja for whole day", desc: "Smoke cleansing for environment and protection." },
+].map((f) => ({ ...f, amount: PUJA_LIST.find((p) => p.cat === f.cat && p.si === f.si)?.amount }));
 
 const MONTHLY = [
   { icon: "ti-calendar-event", title: "Tse-Chu (10th day)", desc: "Guru Tshechu (Guru Rinpoche's 10th Day) is held regularly every month." },
@@ -45,39 +41,6 @@ const ANNUAL = [
 
 export default function Support() {
   const { lang } = useLang();
-  const [pf, setPf] = useState({ puja: "", name: "", email: "", dedication: "", intention: "" });
-  const [pStatus, setPStatus] = useState("idle");
-  const setField = (k) => (e) => setPf((f) => ({ ...f, [k]: e.target.value }));
-  const [newsletter, setNewsletter] = useState(false);
-
-  const submitPuja = async (e) => {
-    e.preventDefault();
-    if (pStatus === "sending") return;
-    setPStatus("sending");
-    const payload = {
-      name: pf.name,
-      email: pf.email,
-      subject: "Puja Request: " + (pf.puja || "—"),
-      message: `Puja: ${pf.puja}\nDedication: ${pf.dedication}\nIntention: ${pf.intention}`,
-    };
-    try { await createItem("messages", { ...payload, type: "puja_request" }); } catch (err) { console.warn(err?.message); }
-    // Add the requester to MailerLite ("Website: Puja requests", + newsletter if ticked)
-    await addToMailerLite({ email: pf.email, name: pf.name, source: "puja", newsletter, puja: pf.puja });
-    try {
-      if (WEB3FORMS_KEY) {
-        await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ access_key: WEB3FORMS_KEY, from_name: pf.name || "Website", ...payload }),
-        });
-      }
-    } catch (err) { console.warn(err?.message); }
-    setPStatus("sent");
-    setPf({ puja: "", name: "", email: "", dedication: "", intention: "" });
-    setNewsletter(false);
-    setTimeout(() => setPStatus("idle"), 4000);
-  };
-
   return (
     <div className="page-community">
       <style>{`
@@ -131,49 +94,25 @@ export default function Support() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
             <div className="order-2 lg:order-1 bg-cream rounded-lg p-6 sm:p-10 border border-gold/10 shadow-sm self-start">
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-headline text-ink-mid">Puja Request Form</h3>
-                <p className="text-ink-light text-[13px] mt-1">Dedicated rituals for your wellbeing.</p>
+                <h3 className="text-2xl font-headline text-ink-mid">Request a Puja Online</h3>
+                <p className="text-ink-light text-[13px] mt-1">Choose a puja by purpose, then send your request on the puja page.</p>
               </div>
-              <form className="space-y-5" onSubmit={submitPuja}>
-                <div>
-                  <label className="block text-[13px] font-medium text-ink-mid mb-1.5">Puja Selection *</label>
-                  <select required value={pf.puja} onChange={setField("puja")} className="w-full bg-white border border-gold/20 rounded-lg px-4 py-2.5 text-[14px] focus:ring-1 focus:ring-gold focus:border-gold outline-none">
-                    <option value="">Select a Puja Ceremony</option>
-                    {PUJA_LIST.map((p) => {
-                      const label = p.en || p.tib;
-                      return <option key={`${p.cat}-${p.si}`} value={label}>{label}</option>;
-                    })}
-                    <option value="Other">Other (state in intention)</option>
-                  </select>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[13px] font-medium text-ink-mid mb-1.5">Your Name *</label>
-                    <input value={pf.name} onChange={setField("name")} className="w-full bg-white border border-gold/20 rounded-lg px-4 py-2.5 text-[14px]" required type="text" />
-                  </div>
-                  <div>
-                    <label className="block text-[13px] font-medium text-ink-mid mb-1.5">Email *</label>
-                    <input value={pf.email} onChange={setField("email")} className="w-full bg-white border border-gold/20 rounded-lg px-4 py-2.5 text-[14px]" required type="email" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[13px] font-medium text-ink-mid mb-1.5">Dedication Name(s) *</label>
-                  <input value={pf.dedication} onChange={setField("dedication")} className="w-full bg-white border border-gold/20 rounded-lg px-4 py-2.5 text-[14px]" placeholder="Who are these prayers for?" required type="text" />
-                </div>
-                <div>
-                  <label className="block text-[13px] font-medium text-ink-mid mb-1.5">Intention</label>
-                  <textarea value={pf.intention} onChange={setField("intention")} className="w-full bg-white border border-gold/20 rounded-lg px-4 py-2.5 text-[14px] min-h-[100px]" placeholder="Briefly state the purpose..."></textarea>
-                </div>
-                <label className="flex items-start gap-3 text-[13px] text-ink-mid cursor-pointer">
-                  <input type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} className="mt-0.5 accent-maroon" />
-                  <span>Send me news and updates from the monastery</span>
-                </label>
-                <button type="submit" disabled={pStatus === "sending"} className={`w-full py-4 font-medium tracking-widest uppercase text-[13px] rounded shadow-md transition-all ${pStatus === "sent" ? "bg-green-600 text-white" : "bg-gold text-white hover:bg-gold-dark"}`}>
-                  {pStatus === "idle" && "Submit Request"}
-                  {pStatus === "sending" && "Sending…"}
-                  {pStatus === "sent" && "Request Sent!"}
-                </button>
-              </form>
+              <div className="space-y-3 mb-8">
+                {PUJA_PURPOSES.map((p) => (
+                  <Link
+                    key={p.cat}
+                    to={`/puja#${pujaCategoryId(p.cat)}`}
+                    className="flex items-center gap-4 p-4 bg-white rounded border border-gold/20 hover:border-gold hover:shadow-sm transition-all"
+                  >
+                    <i className={`ti ${p.icon} text-gold text-2xl shrink-0`}></i>
+                    <span className="font-headline text-[16px] text-ink-mid flex-1">{p.title}</span>
+                    <i className="ti ti-arrow-right text-maroon"></i>
+                  </Link>
+                ))}
+              </div>
+              <Link to="/puja#puja-request" className="w-full py-4 bg-gold text-white hover:bg-gold-dark font-medium tracking-widest uppercase text-[13px] rounded shadow-md transition-all flex items-center justify-center">
+                Request a Puja
+              </Link>
             </div>
             <div className="order-1 lg:order-2">
               <span className="eyebrow mb-3 block">Ritual Offerings</span>
