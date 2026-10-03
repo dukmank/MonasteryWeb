@@ -34,7 +34,7 @@ export const COLLECTIONS = {
       },
       { name: "date", label: "Date (e.g. March 2025)", type: "text", required: true, bilingual: true },
       { name: "excerpt", label: "Excerpt", type: "textarea", rows: 3, bilingual: true },
-      { name: "body", label: "Full content", type: "textarea", rows: 10, bilingual: true },
+      { name: "body", label: "Full content", type: "richtext", rows: 10, bilingual: true },
       { name: "coverImage", label: "Cover image", type: "image" },
       { name: "images", label: "Additional images (multiple allowed)", type: "images" },
       { name: "published", label: "Publicly visible", type: "bool", default: true },

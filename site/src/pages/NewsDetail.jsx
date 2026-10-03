@@ -4,6 +4,7 @@ import { getOne } from "../lib/content.js";
 import { useLang, localized } from "../lib/i18n.jsx";
 import { cld, newsCover } from "../lib/cloudinary.js";
 import PageBanner from "../components/PageBanner.jsx";
+import RichText from "../components/RichText.jsx";
 
 export default function NewsDetail() {
   const { id } = useParams();
@@ -61,19 +62,10 @@ export default function NewsDetail() {
           </aside>
         )}
 
-        <div className="font-body-md text-body-md text-ink-mid space-y-4 whitespace-pre-line leading-relaxed">
-          {(body || "").split(/\n{2,}/).map((para, i) => (
-            <p key={i}>
-              {para.split(/(https?:\/\/[^\s]+)/g).map((part, j) =>
-                /^https?:\/\//.test(part) ? (
-                  <a key={j} href={part} target="_blank" rel="noreferrer" className="text-maroon underline break-all hover:text-gold">{part}</a>
-                ) : (
-                  part
-                )
-              )}
-            </p>
-          ))}
-        </div>
+        <RichText
+          value={body}
+          className="font-body-md text-body-md text-ink-mid leading-relaxed [&>*+*]:!mt-4 [&_a]:text-maroon [&_a]:break-words [&_a:hover]:text-gold"
+        />
 
         {images.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-2xl">

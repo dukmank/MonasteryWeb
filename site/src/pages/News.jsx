@@ -5,6 +5,7 @@ import { useNewsletter } from "../lib/useNewsletter.js";
 import { useLang, localized } from "../lib/i18n.jsx";
 import { cld, newsCover } from "../lib/cloudinary.js";
 import PageBanner from "../components/PageBanner.jsx";
+import { richTextToPlain } from "../lib/richtext.js";
 
 // Order matches the admin category options so filter tabs stay in sync.
 const CATEGORY_ORDER = ["Announcement", "Event", "Publication", "Ritual", "Community", "Institutional", "Zangdok Palri"];
@@ -33,7 +34,7 @@ export default function News() {
     category: d.category || "Announcement",
     date: localized(d, "date", lang),
     title: localized(d, "title", lang),
-    excerpt: localized(d, "excerpt", lang) || localized(d, "body", lang),
+    excerpt: localized(d, "excerpt", lang) || richTextToPlain(localized(d, "body", lang)),
     body: localized(d, "body", lang),
     img: newsCover(d),
     alt: localized(d, "title", lang),
