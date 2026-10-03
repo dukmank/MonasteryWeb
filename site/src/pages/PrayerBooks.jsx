@@ -4,6 +4,7 @@ import { listPublished } from "../lib/content.js";
 import { useLang, localized } from "../lib/i18n.jsx";
 import { cld } from "../lib/cloudinary.js";
 import PageBanner from "../components/PageBanner.jsx";
+import RichText from "../components/RichText.jsx";
 
 const BOOKS = [
   {
@@ -103,7 +104,7 @@ export default function PrayerBooks() {
                 </div>
                 <div className="p-6 sm:p-8 flex flex-col flex-grow text-center">
                   <h3 className="text-[20px] text-maroon mb-3">{b.title}</h3>
-                  <p className="text-[13px] text-ink-light leading-relaxed mb-8 flex-grow">{b.desc}</p>
+                  <div className="mb-8 flex-grow"><RichText value={b.desc} className="text-[13px] text-ink-light leading-relaxed" /></div>
                   <BookButtons pdf={b.pdf} online={b.online} />
                 </div>
               </div>

@@ -1,7 +1,8 @@
 // Schema-driven config. Adding a field here adds it to the admin form,
 // the list view, and the saved document — no other code changes needed.
 //
-// field types: text | textarea | select | image | images | pdf | url | bool | date
+// field types: text | textarea | richtext | select | image | images | pdf | url | bool | date
+// (richtext = bold/italic/lists/links, stored as cleaned HTML — see lib/richtext.js)
 
 // Languages a "bilingual" field can carry besides English. Each is stored as
 // `<field>_<code>`; empty ones are machine-translated on save (see CollectionForm).
@@ -76,7 +77,7 @@ export const COLLECTIONS = {
       { name: "title", label: "Issue name (e.g. Volume V)", type: "text", required: true, bilingual: true },
       { name: "year", label: "Year", type: "text", required: true },
       { name: "coverImage", label: "Cover image", type: "image" },
-      { name: "description", label: "Description", type: "textarea", rows: 4, bilingual: true },
+      { name: "description", label: "Description", type: "richtext", rows: 4, bilingual: true },
       { name: "pdfUrl", label: "PDF file (upload or paste link)", type: "pdf" },
       { name: "featured", label: "Featured issue (show at top)", type: "bool", default: false },
       { name: "published", label: "Publicly visible", type: "bool", default: true },
@@ -100,7 +101,7 @@ export const COLLECTIONS = {
       { name: "compiledBy", label: "Compiled by (“Compiled by:” line)", type: "text", bilingual: true },
       { name: "editions", label: "Edition / Release (italic — e.g. Release: 2026)", type: "text" },
       { name: "coverImage", label: "Cover image", type: "image" },
-      { name: "description", label: "Description (shown only when Author/Format are empty)", type: "textarea", rows: 3, bilingual: true },
+      { name: "description", label: "Description (shown only when Author/Format are empty)", type: "richtext", rows: 3, bilingual: true },
       { name: "buyLink", label: "“Buy Online” link", type: "url" },
       { name: "readLink", label: "“Digital Reading” link", type: "url" },
       { name: "published", label: "Publicly visible", type: "bool", default: true },
@@ -119,7 +120,7 @@ export const COLLECTIONS = {
       { name: "title", label: "Book title", type: "text", required: true, bilingual: true },
       { name: "badge", label: "Badge / Tag (e.g. Foundational, Daily Practice)", type: "text" },
       { name: "coverImage", label: "Cover image", type: "image" },
-      { name: "description", label: "Description", type: "textarea", rows: 3, bilingual: true },
+      { name: "description", label: "Description", type: "richtext", rows: 3, bilingual: true },
       { name: "pdfUrl", label: "PDF file (upload or paste link)", type: "pdf" },
       { name: "onlineUrl", label: "Read online link", type: "url" },
       { name: "order", label: "Sort order (number — lower shows first)", type: "text" },

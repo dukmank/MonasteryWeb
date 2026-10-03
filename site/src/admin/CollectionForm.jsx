@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { COLLECTIONS, CMS_LANGS, emptyDoc } from "./collections.js";
 import { translateFields } from "../lib/translate.js";
 import MessageThread from "./MessageThread.jsx";
+import RichTextEditor from "./RichTextEditor.jsx";
+import { normalizeRichText, richTextToPlain } from "../lib/richtext.js";
 import { getOne, createItem, updateItem } from "../lib/content.js";
 import { uploadImage, uploadFile, cloudinaryEnabled } from "../lib/cloudinary.js";
 
@@ -187,11 +189,14 @@ function FileField({ field, value, onChange }) {
 // English each auto translation was made from); typing in a box makes it manual.
 // Trimmed text of a field value; anything that is not a string counts as empty.
 const trimmed = (v) => (typeof v === "string" ? v.trim() : "");
+// Same, but formatting-only rich text (e.g. "<p><br></p>") counts as empty.
+const hasText = (v) => !!richTextToPlain(v);
 
 function OtherLanguages({ field, data, set, setAuto }) {
   const auto = data.i18nAuto || {};
-  const filled = CMS_LANGS.filter((l) => trimmed(data[`${field.name}_${l.code}`])).length;
+  const filled = CMS_LANGS.filter((l) => hasText(data[`${field.name}_${l.code}`])).length;
   const multiline = field.type === "textarea";
+  const rich = field.type === "richtext";
   return (
     <details className="group border border-gold/25 rounded-sm bg-cream/30">
       <summary className="cursor-pointer select-none px-3 py-2 text-[11px] font-semibold uppercase tracking-widest text-maroon/70 flex items-center gap-2">
@@ -218,7 +223,18 @@ function OtherLanguages({ field, data, set, setAuto }) {
                 {l.label}
                 {isAuto && <span className="normal-case tracking-normal bg-gold/15 text-gold-dark px-1.5 py-0.5 rounded text-[10px]">auto — review</span>}
               </label>
-              {multiline ? <textarea rows={Math.min(field.rows || 4, 6)} {...props} /> : <input type="text" {...props} />}
+              {rich ? (
+                <RichTextEditor
+                  value={props.value}
+                  lang={l.code}
+                  placeholder={props.placeholder}
+                  minRows={Math.min(field.rows || 4, 6)}
+                  onChange={(v) => {
+                    set(key, v);
+                    setAuto(key, false);
+                  }}
+                />
+              ) : multiline ? <textarea rows={Math.min(field.rows || 4, 6)} {...props} /> : <input type="text" {...props} />}
             </div>
           );
         })}
@@ -276,10 +292,10 @@ export default function CollectionForm() {
       for (const f of coll.fields) {
         if (!f.bilingual) continue; // only text fields are translated (not images, tick boxes…)
         const en = trimmed(data[f.name]);
-        if (!en) continue;
+        if (!en || !hasText(en)) continue;
         for (const l of CMS_LANGS) {
           const key = `${f.name}_${l.code}`;
-          const empty = !trimmed(data[key]);
+          const empty = !hasText(data[key]);
           const stale = key in auto && auto[key] !== en;
           if (empty || stale) {
             fields[f.name] = data[f.name];
@@ -295,7 +311,8 @@ export default function CollectionForm() {
           for (const [code, vals] of Object.entries(tr)) {
             for (const [name, translated] of Object.entries(vals || {})) {
               if (!translated) continue;
-              out[`${name}_${code}`] = translated;
+              const isRich = coll.fields.find((f) => f.name === name)?.type === "richtext";
+              out[`${name}_${code}`] = isRich ? normalizeRichText(translated) : translated;
               auto[`${name}_${code}`] = trimmed(data[name]);
             }
           }
@@ -378,6 +395,17 @@ export default function CollectionForm() {
                     <option key={o} value={o}>{o}</option>
                   ))}
                 </select>
+              </div>
+            );
+          }
+          if (f.type === "richtext") {
+            return (
+              <div key={f.name} className="space-y-2">
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-widest text-ink-light mb-2">{f.label}</label>
+                  <RichTextEditor value={data[f.name] || ""} minRows={f.rows || 4} onChange={(v) => set(f.name, v)} />
+                </div>
+                {f.bilingual && <OtherLanguages field={f} data={data} set={set} setAuto={setAuto} />}
               </div>
             );
           }
