@@ -4,6 +4,7 @@ import PageBanner from "../components/PageBanner.jsx";
 import { listPublished } from "../lib/content.js";
 import { cld } from "../lib/cloudinary.js";
 import { useLang, localized } from "../lib/i18n.jsx";
+import RichText from "../components/RichText.jsx";
 
 function badgeClassFor(badge) {
   const b = (badge || "").toLowerCase();
@@ -119,7 +120,7 @@ export default function Publications() {
               {compiledBy && <p className="font-caption text-caption"><strong>Compiled by:</strong> {compiledBy}</p>}
               {editions && <p className="font-caption text-caption italic">{editions}</p>}
               {!author && !format && !compiledBy && !editions && description && (
-                <p className="font-caption text-caption">{description}</p>
+                <RichText value={description} className="font-caption text-caption" />
               )}
             </>
           ),

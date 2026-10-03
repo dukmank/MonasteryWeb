@@ -46,3 +46,14 @@ h1, h2, h3, h4, .font-serif {
 ::-webkit-scrollbar-track { background: #F0EAE0; }
 ::-webkit-scrollbar-thumb { background: #C9A24A; border-radius: 999px; border: 3px solid #F0EAE0; }
 ::-webkit-scrollbar-thumb:hover { background: #7B1E2A; }
+
+/* CMS rich text (descriptions): Tailwind's reset removes list bullets and spacing */
+.rich-text > * + * { margin-top: 0.6em; }
+.rich-text ul { list-style: disc; padding-left: 1.4em; }
+.rich-text ol { list-style: decimal; padding-left: 1.4em; }
+.rich-text li + li { margin-top: 0.2em; }
+.rich-text strong { font-weight: 600; }
+.rich-text em { font-style: italic; }
+.rich-text u { text-decoration: underline; }
+.rich-text a { text-decoration: underline; text-underline-offset: 2px; }
+.rich-text-editor:empty::before { content: attr(data-placeholder); color: #9a9088; pointer-events: none; }

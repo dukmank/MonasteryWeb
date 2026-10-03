@@ -4,6 +4,7 @@ import { listPublished } from "../lib/content.js";
 import { useLang, localized } from "../lib/i18n.jsx";
 import { cld } from "../lib/cloudinary.js";
 import PageBanner from "../components/PageBanner.jsx";
+import RichText from "../components/RichText.jsx";
 
 // Magazine PDFs hosted on Cloudinary (same place as admin PDF uploads).
 // Used as a fallback when the CMS link is empty or still points at the old
@@ -128,11 +129,13 @@ export default function Magazine() {
               <h3 className="font-hero-title text-[32px] sm:text-[40px] lg:text-hero-title text-gold-light mb-lg leading-tight">
                 {featured ? featured.title || `Annual Magazine ${featured.year}` : "Annual Magazine 2025"}
               </h3>
-              <p className="font-body-lg text-body-lg text-gold-light/80 mb-xl max-w-lg">
-                {featured && featured.description
-                  ? featured.description
-                  : "Explore the profound insights from our recent pilgrimages, monastic life updates, and exclusive interviews with the Venerable masters of the Dundul Raptenling lineage. A journey through sacred silence and communal wisdom."}
-              </p>
+              {featured && featured.description ? (
+                <RichText value={featured.description} className="font-body-lg text-body-lg text-gold-light/80 mb-xl max-w-lg" />
+              ) : (
+                <p className="font-body-lg text-body-lg text-gold-light/80 mb-xl max-w-lg">
+                  Explore the profound insights from our recent pilgrimages, monastic life updates, and exclusive interviews with the Venerable masters of the Dundul Raptenling lineage. A journey through sacred silence and communal wisdom.
+                </p>
+              )}
               <div className="flex flex-wrap gap-base">
                 <a
                   href={featured && featured.pdfUrl ? featured.pdfUrl : "#"}
