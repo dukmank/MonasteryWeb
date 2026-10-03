@@ -25,7 +25,7 @@ export const loadThread = (messageId, threadIds = []) =>
   call({ action: "thread", messageId, threadIds }).then((d) => ({ mailbox: d.mailbox || "", messages: d.messages || [] }));
 
 // -> { ok, sentAt, messageId, threadId }
-// text = plain-text version; html = the rich-text reply; quote = { from, when, text }
-// of the message being answered (shown under the reply); threadId = Gmail conversation.
-export const sendReply = (messageId, { subject, text, html, references, quote, threadId }) =>
-  call({ action: "send", messageId, subject, text, references, ...(html ? { html } : {}), ...(quote ? { quote } : {}), ...(threadId ? { threadId } : {}) });
+// text = plain-text version; html = the rich-text reply; history = [{ from, when, text }]
+// newest first, the conversation so far (shown under the reply); threadId = Gmail conversation.
+export const sendReply = (messageId, { subject, text, html, references, history, threadId }) =>
+  call({ action: "send", messageId, subject, text, references, ...(html ? { html } : {}), ...(history?.length ? { history } : {}), ...(threadId ? { threadId } : {}) });
