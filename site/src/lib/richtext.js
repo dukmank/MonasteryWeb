@@ -78,7 +78,7 @@ function cleanNode(node, doc) {
     }
     el.appendChild(inner);
     // Empty paragraphs (left around lists by the browser editor) only add gaps.
-    if ((tag === "P" || tag === "LI") && !el.textContent.trim()) continue;
+    if ((tag === "P" || tag === "LI") && !el.textContent.trim() && !el.querySelector("br")) continue;
     out.appendChild(el);
   }
   return out;
@@ -117,4 +117,38 @@ export function richTextToPlain(value) {
 export function normalizeRichText(html) {
   const safe = toSafeHtml(html);
   return richTextToPlain(safe) ? safe : "";
+}
+
+// Rich text -> the plain-text part of an e-mail: blank line between paragraphs,
+// "• " / "1. " for list items, links as "text (https://…)".
+export function richTextToEmailText(value) {
+  const html = toSafeHtml(value);
+  if (!html) return "";
+  if (typeof DOMParser === "undefined") return richTextToPlain(html);
+  const doc = new DOMParser().parseFromString(`<body>${html}</body>`, "text/html");
+  const inline = (node) =>
+    [...node.childNodes]
+      .map((n) => {
+        if (n.nodeType === 3) return n.nodeValue;
+        if (n.nodeType !== 1) return "";
+        const tag = n.tagName;
+        if (tag === "BR") return "\n";
+        if (tag === "UL" || tag === "OL") return "\n" + block(n).trim();
+        const text = inline(n);
+        const href = tag === "A" ? n.getAttribute("href") || "" : "";
+        return href && href !== text && !href.startsWith("mailto:" + text) ? `${text} (${href})` : text;
+      })
+      .join("");
+  const block = (node) =>
+    [...node.childNodes]
+      .map((n) => {
+        if (n.nodeType !== 1) return (n.nodeValue || "").trim() ? n.nodeValue + "\n\n" : "";
+        if (n.tagName === "UL" || n.tagName === "OL") {
+          const ordered = n.tagName === "OL";
+          return [...n.children].map((li, i) => `${ordered ? `${i + 1}.` : "•"} ${inline(li).trim()}`).join("\n") + "\n\n";
+        }
+        return inline(n).trim() + "\n\n";
+      })
+      .join("");
+  return block(doc.body).replace(/\n{3,}/g, "\n\n").trim();
 }

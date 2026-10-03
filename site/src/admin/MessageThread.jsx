@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { updateItem } from "../lib/content.js";
 import { loadThread, sendReply } from "../lib/mail.js";
+import { normalizeRichText, richTextToEmailText, richTextToPlain } from "../lib/richtext.js";
+import RichTextEditor from "./RichTextEditor.jsx";
 
 const SIGNATURE = "With best wishes,\nDundul Raptenling Monastery\ncontact@dundulraptenling.org";
+const SIGNATURE_HTML = "<p>With best wishes,<br>Dundul Raptenling Monastery<br>contact@dundulraptenling.org</p>";
+const escapeHtml = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 const replySubject = (m) =>
   m.subject ? `Re: ${m.subject.replace(/^Re:\s*/i, "")}` : "Re: your message to Dundul Raptenling Monastery";
@@ -56,6 +60,7 @@ export default function MessageThread({ id, data, set }) {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState("");
+  const [sentNotice, setSentNotice] = useState("");
 
   const refresh = () => {
     setThreadError("");
@@ -68,7 +73,8 @@ export default function MessageThread({ id, data, set }) {
   };
   useEffect(refresh, [id]);
   // Prefill once the message has loaded, unless the admin already started typing.
-  const draft = `Dear ${data.name || "friend"},\n\n\n\n${SIGNATURE}`;
+  // The reply box is rich text (HTML); a blank paragraph is left for the message.
+  const draft = `<p>Dear ${escapeHtml(data.name || "friend")},</p><p><br></p>${SIGNATURE_HTML}`;
   const [lastDraft, setLastDraft] = useState("");
   useEffect(() => {
     setSubject(replySubject(data));
@@ -85,17 +91,23 @@ export default function MessageThread({ id, data, set }) {
     : saved.map((r) => ({ id: r.at, date: r.at, direction: "out", from: "Dundul Raptenling Monastery", subject: r.subject, text: r.text }));
 
   const send = async () => {
-    if (!text.trim() || !window.confirm(`Send this reply to ${data.email}?`)) return;
+    const html = normalizeRichText(text);
+    const plain = richTextToEmailText(html);
+    if (!plain || !window.confirm(`Send this reply to ${data.email}?`)) return;
     setSending(true);
     setSendError("");
+    setSentNotice("");
     try {
       const refs = fromMail.map((m) => m.id).filter((x) => /^<.+>$/.test(x));
-      const r = await sendReply(id, subject, text, refs);
-      const replies = [...saved, { at: r.sentAt, subject, text, messageId: r.messageId || "" }];
+      const r = await sendReply(id, subject, plain, refs, html);
+      const replies = [...saved, { at: r.sentAt, subject, text: plain, html, messageId: r.messageId || "" }];
       set("replies", replies);
       set("repliedAt", r.sentAt);
       await updateItem("messages", id, { replies, repliedAt: r.sentAt });
       setText(draft);
+      // Gmail accepted the message (the call fails otherwise). The sent copy shows in
+      // the conversation above once Gmail files it, and in the connected mailbox's Sent folder.
+      setSentNotice(`Sent to ${data.email} at ${fmt(r.sentAt)}. Gmail accepted it; it will appear in the conversation above.`);
       setTimeout(refresh, 2500); // let Gmail file the sent copy
     } catch (e) {
       setSendError(e.message);
@@ -155,17 +167,18 @@ export default function MessageThread({ id, data, set }) {
           onChange={(e) => setSubject(e.target.value)}
           className="w-full border border-cream-dark rounded-sm px-3 py-2 text-[14px] focus:outline-none focus:border-maroon"
         />
-        <textarea
-          rows={8}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className="w-full border border-cream-dark rounded-sm px-3 py-2 text-[14px] leading-relaxed focus:outline-none focus:border-maroon"
-        />
+        <RichTextEditor value={text} minRows={8} onChange={(v) => { setText(v); setSentNotice(""); }} />
         {sendError && <p className="text-[13px] text-error">{sendError}</p>}
+        {sentNotice && (
+          <p className="flex items-start gap-1.5 text-[13px] text-green-800 bg-green-50 border border-green-200 rounded-sm px-3 py-2" role="status">
+            <span className="material-symbols-outlined text-[18px]">check_circle</span>
+            {sentNotice}
+          </p>
+        )}
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
-            disabled={sending || !text.trim()}
+            disabled={sending || !richTextToPlain(text)}
             onClick={send}
             className="inline-flex items-center gap-2 bg-maroon text-white px-4 py-2 rounded-sm text-[11px] font-semibold tracking-widest uppercase hover:bg-maroon-mid transition-colors disabled:opacity-50"
           >

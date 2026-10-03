@@ -23,5 +23,6 @@ async function call(payload) {
 export const loadThread = (messageId) => call({ action: "thread", messageId }).then((d) => d.messages || []);
 
 // -> { ok, sentAt, messageId }
-export const sendReply = (messageId, subject, text, references) =>
-  call({ action: "send", messageId, subject, text, references });
+// text = plain-text version; html = the rich-text reply (optional)
+export const sendReply = (messageId, subject, text, references, html) =>
+  call({ action: "send", messageId, subject, text, references, ...(html ? { html } : {}) });
