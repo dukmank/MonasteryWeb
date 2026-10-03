@@ -10,6 +10,38 @@ export const PUJA_CATEGORIES = [
   "Rituals of Caring for the Deceased",
 ];
 
+// "Choose by purpose" cards on /puja and /support: each maps to a catalogue
+// category; the pujas named in each description are from PUJA_LIST.
+export const PUJA_PURPOSES = [
+  {
+    cat: "Rituals for Illness",
+    icon: "ti-heart-plus",
+    title: "Puja for Health and Healing",
+    desc: "Prayers and rituals for someone who is ill or recovering, such as the Medicine Buddha ritual and the Heart Sutra, dedicated to their healing and well-being.",
+  },
+  {
+    cat: "Long Life Rituals",
+    icon: "ti-plant",
+    title: "Long Life Puja",
+    desc: "Long-life rituals to strengthen the life force, often requested for elders, teachers, or at times of ill health, such as the long life puja through Vijaya and the long life sutra.",
+  },
+  {
+    cat: "Removing Obstacle Rituals",
+    icon: "ti-shield",
+    title: "Puja for Removing Obstacles",
+    desc: "Rituals to clear obstacles in health, family, work, travel, or practice, such as Vajrakilaya, Wrathful Guru Rinpoche, and the White Parasol (Ushnisha Sitapatra).",
+  },
+  {
+    cat: "Rituals of Caring for the Deceased",
+    icon: "ti-candle",
+    title: "Puja for the Deceased",
+    desc: "Prayers for a loved one who has passed away, to purify negative karma and guide them toward a good rebirth, such as the Amitabha puja, 1000 times Vajrasattva, and Avalokiteshvara practice.",
+  },
+];
+
+// Anchor id of a category in the /puja catalogue.
+export const pujaCategoryId = (cat) => "cat-" + cat.toLowerCase().replace(/[^a-z]+/g, "-").replace(/-$/, "");
+
 export const PUJA_LIST = [
   { si: "1", tib: "རྣམ་རྒྱལ་ཚེ་ཆོག།", en: "Long life puja through Vijaya", days: "One Day", amount: "36500", cat: "Long Life Rituals" },
   { si: "2", tib: "ཚེ་ཆོག་སྟོང་ཚར་རྒྱས་པ།", en: "Long life version 1000 times long –life puja", days: "Two Day", amount: "55000", cat: "Long Life Rituals" },
