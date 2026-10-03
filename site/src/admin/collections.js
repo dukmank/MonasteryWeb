@@ -23,6 +23,7 @@ export const COLLECTIONS = {
     titleField: "title",
     subtitleField: "date",
     imageField: "coverImage",
+    filterField: "category", // list view: filter chips for this select field
     fields: [
       { name: "title", label: "Title", type: "text", required: true, bilingual: true },
       {
